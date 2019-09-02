@@ -53,7 +53,7 @@ CREATE TABLE rooms
     FOREIGN KEY (room_cat_id) REFERENCES room_categories(id)
 );
 
-CREATE TABLE occupancy
+CREATE TABLE occupancies
 (
 	id					INT NOT NULL AUTO_INCREMENT UNIQUE,
     room_id				INT NOT NULL,
