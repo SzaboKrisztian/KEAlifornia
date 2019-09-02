@@ -16,13 +16,15 @@ public class WebController {
         return "/index";
     }
 
-    @GetMapping("/admin/index")
-    public String showIndex3() {
-        return "/index";
-    }
-
     @GetMapping("/login")
     public String login() {
         return "/login";
     }
+
+    @GetMapping("/admin/index")
+    public String showAdminMenu() {
+        return "/admin-menu";
+    }
+
+
 }
