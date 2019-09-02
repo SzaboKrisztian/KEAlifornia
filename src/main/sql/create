@@ -29,6 +29,7 @@ CREATE TABLE room_categories
     id              	INT NOT NULL AUTO_INCREMENT UNIQUE,
     name  	        	VARCHAR(140),
     description 		TEXT,
+    price_per_night 	INT,
     PRIMARY KEY (id)
 );
 
