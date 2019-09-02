@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class KeAliforniaApplication {
+public class KEAliforniaApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(KeAliforniaApplication.class, args);
+    SpringApplication.run(KEAliforniaApplication.class, args);
   }
 
 }
