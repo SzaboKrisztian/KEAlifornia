@@ -1,0 +1,80 @@
+create database if not exists kealifornia;
+use kealifornia;
+
+CREATE TABLE guests
+(
+    id              	INT NOT NULL AUTO_INCREMENT UNIQUE,
+    first_name          VARCHAR(140) NOT NULL,
+    last_name           VARCHAR(140),
+    email       		VARCHAR(140),
+    phone_no       		VARCHAR(140),
+    doc_id_no   		VARCHAR(140),
+    date_of_birth    	DATE,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE bookings
+(
+    id              	INT NOT NULL AUTO_INCREMENT UNIQUE,
+    guest_id			INT NOT NULL,
+    check_in 			DATE,
+    check_out 			DATE,
+    ref_no				VARCHAR(140),
+    PRIMARY KEY (id),
+    FOREIGN KEY (guest_id) REFERENCES guests (id)
+);
+
+CREATE TABLE room_categories
+(
+    id              	INT NOT NULL AUTO_INCREMENT UNIQUE,
+    name  	        	VARCHAR(140),
+    description 		TEXT,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE booked_rooms
+(
+    id              	INT NOT NULL AUTO_INCREMENT UNIQUE,
+	booking_id			INT NOT NULL,
+    category_id			INT NOT NULL,
+    no_of_rooms			INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (booking_id) REFERENCES bookings (id),
+    FOREIGN KEY (category_id) REFERENCES room_categories (id)
+);
+
+CREATE TABLE rooms
+(
+    id              	INT NOT NULL AUTO_INCREMENT UNIQUE,
+    room_cat_id			INT NOT NULL,
+    room_number			VARCHAR(140),
+    PRIMARY KEY (id),
+    FOREIGN KEY (room_cat_id) REFERENCES room_categories (id)
+);
+
+CREATE TABLE occupancy
+(
+	id					INT NOT NULL AUTO_INCREMENT UNIQUE,
+    room_id				INT NOT NULL,
+    guest_id			INT NOT NULL,
+    check_in			DATE,
+    check_out			DATE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (room_id) REFERENCES rooms (id),
+    FOREIGN KEY (guest_id) REFERENCES guests(id)
+);
+
+CREATE TABLE IF NOT EXISTS kealifornia.user
+(
+  user_id 				INT NOT NULL AUTO_INCREMENT,
+  username 				VARCHAR(255) NOT NULL,
+  password 				VARCHAR(255) NOT NULL,
+  role 					VARCHAR(255) NOT NULL,
+  enabled 				INT NOT NULL DEFAULT '1',
+  PRIMARY KEY (user_id)
+);
+
+
+
+
+
