@@ -21,7 +21,7 @@ CREATE TABLE bookings
     check_out 			DATE,
     ref_no				VARCHAR(140),
     PRIMARY KEY (id),
-    FOREIGN KEY (guest_id) REFERENCES guests (id)
+    FOREIGN KEY (guest_id) REFERENCES guests(id)
 );
 
 CREATE TABLE room_categories
@@ -39,8 +39,8 @@ CREATE TABLE booked_rooms
     category_id			INT NOT NULL,
     no_of_rooms			INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (booking_id) REFERENCES bookings (id),
-    FOREIGN KEY (category_id) REFERENCES room_categories (id)
+    FOREIGN KEY (booking_id) REFERENCES bookings(id),
+    FOREIGN KEY (category_id) REFERENCES room_categories(id)
 );
 
 CREATE TABLE rooms
@@ -49,7 +49,7 @@ CREATE TABLE rooms
     room_cat_id			INT NOT NULL,
     room_number			VARCHAR(140),
     PRIMARY KEY (id),
-    FOREIGN KEY (room_cat_id) REFERENCES room_categories (id)
+    FOREIGN KEY (room_cat_id) REFERENCES room_categories(id)
 );
 
 CREATE TABLE occupancy
@@ -60,11 +60,11 @@ CREATE TABLE occupancy
     check_in			DATE,
     check_out			DATE,
     PRIMARY KEY (id),
-    FOREIGN KEY (room_id) REFERENCES rooms (id),
+    FOREIGN KEY (room_id) REFERENCES rooms(id),
     FOREIGN KEY (guest_id) REFERENCES guests(id)
 );
 
-CREATE TABLE IF NOT EXISTS kealifornia.user
+CREATE TABLE user
 (
   user_id 				INT NOT NULL AUTO_INCREMENT,
   username 				VARCHAR(255) NOT NULL,
@@ -73,8 +73,3 @@ CREATE TABLE IF NOT EXISTS kealifornia.user
   enabled 				INT NOT NULL DEFAULT '1',
   PRIMARY KEY (user_id)
 );
-
-
-
-
-
