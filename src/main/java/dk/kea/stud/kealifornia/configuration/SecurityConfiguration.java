@@ -1,4 +1,4 @@
-package dk.kea.stud.kealifornia.configurations;
+package dk.kea.stud.kealifornia.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
