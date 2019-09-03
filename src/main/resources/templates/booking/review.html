@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Hotel KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <h1 class="display-4">Review the details of your booking</h1>
+                <table>
+                    <tr>
+                        <td>Period: </td>
+                        <td th:text="${booking.getCheckIn()} + ' - ' + ${booking.getCheckOut()}"></td>
+                    </tr>
+                    <tr th:each="entry:${booking.getBookedRooms()}">
+                        <td th:text="${entry.getValue()} + 'x ' +
+                            ${roomcatrepo.findRoomCategoryById(entry.getKey()).getName()} + ' (' +
+                            ${roomcatrepo.findRoomCategoryById(entry.getKey()).getPricePerNight() / 100} +
+                            ' DKK)'"></td>
+                        <td th:text="${entry.getValue()} * ${roomcatrepo.
+                            findRoomCategoryById(entry.getKey()).getPricePerNight()} / 100"></td>
+                    </tr>
+                    <tr>
+                        <td>Total:</td>
+                        <td th:text="${total} / 100"></td>
+                    </tr>
+                </table>
+                <form action="/confirm" method="post">
+                    <input type="hidden" th:object="${booking}">
+                    <button type="submit">Continue</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>
