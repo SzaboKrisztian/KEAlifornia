@@ -75,12 +75,12 @@ public class BookingRepository {
     result.setCheckOut(rs.getDate("check_out").toLocalDate());
     result.setRefNo(rs.getString("ref_no"));
 
-    Map<RoomCategory, Integer> bookedRooms = new HashMap<>();
+    Map<Integer, Integer> bookedRooms = new HashMap<>();
     String query = "SELECT * FROM booked_rooms WHERE booking_id = ?;";
     SqlRowSet rooms_rs = jdbc.queryForRowSet(query, result.getId());
 
     while (rs.next()) {
-      bookedRooms.put(roomCategoryRepo.findRoomCategoryById(rooms_rs.getInt("category_id")),
+      bookedRooms.put(rooms_rs.getInt("category_id"),
           rooms_rs.getInt("no_of_rooms"));
     }
 
@@ -115,8 +115,8 @@ public class BookingRepository {
   private void addBookedRooms(Booking booking) {
     String query = "INSERT INTO booked_rooms (booking_id, category_id, no_of_rooms) " +
         "VALUES (?, ?, ?);";
-    for (Map.Entry<RoomCategory, Integer> entry : booking.getBookedRooms().entrySet()) {
-      jdbc.update(query, booking.getId(), entry.getKey().getId(), entry.getValue());
+    for (Map.Entry<Integer, Integer> entry : booking.getBookedRooms().entrySet()) {
+      jdbc.update(query, booking.getId(), entry.getKey(), entry.getValue());
     }
   }
 
