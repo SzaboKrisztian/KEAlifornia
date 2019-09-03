@@ -38,6 +38,19 @@ public class BookingRepository {
     return result;
   }
 
+  public Booking findBookingByRefNo(String refNo) {
+    Booking result = null;
+
+    String query = "SELECT * FROM bookings WHERE ref_no = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, refNo);
+
+    if (rs.first()) {
+      result = extractNextBookingFromRowSet(rs);
+    }
+
+    return result;
+  }
+
   public List<Booking> getAllBookings() {
     List<Booking> result = new ArrayList<>();
 

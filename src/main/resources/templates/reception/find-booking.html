@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Checking in</title>
+    <link th:replace="fragments :: bootstrap_head">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <h3 class="display-4">Input booking's unique reference code!</h3>
+                <hr>
+                <form action="/findBooking" method="post">
+                    <div class="form-group">
+                        <label for="code">Booking's reference code: </label>
+                        <input type="text" class="form-control"
+                               id="code" name="bookingNo">
+                    </div>
+                    <button type="submit">Search booking</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>

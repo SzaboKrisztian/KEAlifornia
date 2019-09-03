@@ -1,0 +1,2 @@
+INSERT INTO USER (user_id, username, password, role, enabled) VALUES
+( NULL , "admin", "$2a$10$.4KH/WfJD8UWYhFZrDa0VuMC.uBLSM9OyvJYqK5FopItG8XNAsm3W", "ROLE_ADMIN", 1 );
