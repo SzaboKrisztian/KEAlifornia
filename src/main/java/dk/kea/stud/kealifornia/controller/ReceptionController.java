@@ -1,14 +1,13 @@
-package dk.kea.stud.kealifornia.model;
+package dk.kea.stud.kealifornia.controller;
 
+import dk.kea.stud.kealifornia.model.Occupancy;
 import dk.kea.stud.kealifornia.repository.BookingRepository;
 import dk.kea.stud.kealifornia.repository.OccupancyRepository;
+import dk.kea.stud.kealifornia.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ReceptionController {
@@ -16,26 +15,27 @@ public class ReceptionController {
   private BookingRepository bookingRepo;
   @Autowired
   private OccupancyRepository occupancyRepo;
+  @Autowired
+  private RoomRepository roomRepo;
 
-  @GetMapping("/arrival")
-  public String arrival() {
-    return "templates/reception/find-booking";
+  @GetMapping("/findBooking")
+  public String findBooking() {
+    return "reception/find-booking";
   }
 
+  @ResponseBody
   @PostMapping("/findBooking")
-  public String findBooking(@RequestParam String bookingNo, Model model) {
+  public String checkIn(@RequestParam String bookingNo, Model model) {
     model.addAttribute(bookingRepo.findBookingByRefNo(bookingNo));
     model.addAttribute("checkInForm", new Occupancy());
-    //TODO model.addAttribute( list of available rooms for each category )
-
-    return "templates/reception/check-in";
+    model.addAttribute("rooms",roomRepo.findAllRooms());
+    return "reception/check-in";
   }
 
-  //TODO
   @PostMapping("/checkIn")
-  public String checkIn(@ModelAttribute Occupancy checkInForm) {
+  public String updateDatabase(@ModelAttribute Occupancy checkInForm) {
     occupancyRepo.addOccupancy(checkInForm);
-    return "/arrival";
+    return  "redirect:/index";
   }
 
 }

@@ -2,6 +2,7 @@ package dk.kea.stud.kealifornia.repository;
 
 import dk.kea.stud.kealifornia.model.Guest;
 import dk.kea.stud.kealifornia.model.Occupancy;
+import dk.kea.stud.kealifornia.model.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -15,6 +16,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -26,6 +28,8 @@ public class OccupancyRepository {
   private RoomRepository roomRepo;
   @Autowired
   private GuestRepository guestRepo;
+  @Autowired
+  private RoomCategoryRepository roomCategoryRepo;
 
   public Occupancy findOccupancyById(int id) {
     Occupancy result = null;
@@ -91,5 +95,29 @@ public class OccupancyRepository {
 
   public void deleteOccupancy(Occupancy occupancy) {
     jdbc.update("DELETE FROM occupancies WHERE id = ?;");
+  }
+
+  public List<String> getAvailableRoomsForCategory(int category){
+    List<String> result = new ArrayList<>();
+
+    String query = "SELECT room_number FROM rooms WHERE room_cat_id = ? AND " +
+        "id NOT IN (SELECT room_id FROM occupancy)";
+    SqlRowSet rs = jdbc.queryForRowSet(query, category);
+
+    while (rs.next()) {
+      result.add(rs.getString("room_number"));
+    }
+
+    return result;
+  }
+
+  public HashMap<Integer, List<String>> getAvailableRoomsForAllCategories() {
+    HashMap<Integer, List<String>> result = new HashMap<>();
+
+    for (Integer category : roomCategoryRepo.getAllRoomIntCategories()) {
+      result.put(category, getAvailableRoomsForCategory(category));
+    }
+
+    return result;
   }
 }

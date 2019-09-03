@@ -11,10 +11,10 @@
 </head>
 <body>
 <nav th:fragment="navbar"
-     class="navbar navbar-expand-lg bg-primary sticky-top"
+     class="navbar navbar-expand-lg navbar-light bg-primary sticky-top"
      style="margin-bottom: 1rem;">
     <a class="navbar-brand" href="/">KEAlifornia</a>
-    <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse"
+    <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -23,16 +23,22 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" >Login</a>
+                <a class="nav-link">Login</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" >Booking</a>
+                <a class="nav-link">Booking</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle dropdown-toggle-split pl-0" href="#"
+                   id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Arrivals</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/newGuest">Guest without booking</a>
+                    <a class="dropdown-item" href="/findBooking">Guest with booking</a>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/arrival">Arrival</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/departure">Departure</a>
+                <a class="nav-link" href="/departure">Departures</a>
             </li>
         </ul>
     </div>
