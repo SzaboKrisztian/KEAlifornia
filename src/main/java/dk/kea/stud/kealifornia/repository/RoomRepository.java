@@ -60,7 +60,7 @@ public class RoomRepository {
   }
 
   public boolean canDelete(Room room) {
-    String query = ("SELECT COUNT(*) FROM rooms WHERE id = ?;");
+    String query = ("SELECT COUNT(*) FROM occupancy WHERE room_id = ?;");
     SqlRowSet rs = jdbc.queryForRowSet(query, room.getId());
     rs.first();
     int noRooms = rs.getInt(1);
