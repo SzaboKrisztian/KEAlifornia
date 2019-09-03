@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Room Categories</title>
 </head>
 <body>
-$END$
+<form method="post" action="/admin/edit-room-category/save" th:object="${editedRoomCategory}">
+
+    <!--    <input type="hidden" id="id" th:field="${newRoomCategory.id}" name="id">-->
+    <input type="hidden" th:field="${editedRoomCategory.id}">
+
+    <label>Name</label>
+    <input type="text" th:field="${editedRoomCategory.name}" required>
+
+    <label>Description</label>
+    <input type="text" th:field="${editedRoomCategory.description}" required>
+
+    <label>Price per night</label>
+    <input type="text" th:field="${editedRoomCategory.pricePerNight}" required>
+
+
+    <button type="submit">
+        Save
+    </button>
+</form>
 </body>
 </html>
+

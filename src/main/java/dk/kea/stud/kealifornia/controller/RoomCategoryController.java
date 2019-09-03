@@ -22,7 +22,7 @@ public class RoomCategoryController {
     public String showAllRoomCategory(Model model) throws Exception {
         List<RoomCategory> roomCategoryList = roomCategoryRepo.getAllRoomCategories();
         model.addAttribute("roomCategory", roomCategoryList);
-        return "/admin/room-category";
+        return "/room-category/room-category";
     }
 
 
@@ -35,7 +35,7 @@ public class RoomCategoryController {
     @GetMapping("/admin/add-room-category")
     public String addRoomCategory(Model m) {
         m.addAttribute("newRoomCategory", new RoomCategory());
-        return "/admin/add-room-category";
+        return "/room-category/add-room-category";
     }
 
     @PostMapping("/admin/add-room-category/save")
@@ -49,13 +49,13 @@ public class RoomCategoryController {
     public String editRoomCategory(@PathVariable("id") int id, Model model) {
         RoomCategory roomCategory = roomCategoryRepo.findRoomCategoryById(id);
         model.addAttribute("editedRoomCategory", roomCategory);
-        return "/admin/edit-room-category";
+        return "/room-category/edit-room-category";
     }
 
     @PostMapping("/admin/edit-room-category/save")
     public String saveEditedRoomCategory(@ModelAttribute RoomCategory roomCategory) {
 
         roomCategoryRepo.editRoomCategory(roomCategory);
-        return "redirect:/admin/room-catgegory";
+        return "redirect:/admin/room-category";
     }
 }
