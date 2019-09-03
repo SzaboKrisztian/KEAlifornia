@@ -6,6 +6,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Repository
 public class RoomRepository {
 
@@ -13,6 +16,18 @@ public class RoomRepository {
   private JdbcTemplate jdbc;
   @Autowired
   private RoomCategoryRepository roomCategoryRepo;
+
+  public List<Room> findAllRooms() {
+    List<Room> roomsList = new ArrayList<>();
+
+    String query = "SELECT * FROM rooms";
+    SqlRowSet rs = jdbc.queryForRowSet(query);
+
+    while(rs.next()){
+      roomsList.add(extractNextRoomFromRowSet(rs));
+    }
+    return roomsList;
+  }
 
   public Room findRoomtById(int id) {
     Room result = null;
@@ -44,5 +59,24 @@ public class RoomRepository {
 
   public void deleteRoom(int id) {
     jdbc.update("DELETE FROM rooms WHERE id = ?;", id);
+  }
+
+  public boolean canDelete(Room room) {
+    String query = ("SELECT COUNT(*) FROM rooms WHERE id = ?;");
+    SqlRowSet rs = jdbc.queryForRowSet(query, room.getId());
+    rs.first();
+    int noRooms = rs.getInt(1);
+
+    return noRooms == 0;
+  }
+
+  public void updateRoom(Room room) {
+    jdbc.update("UPDATE rooms SET " +
+                    "room_cat_id = ?," +
+                    "room_number = ? " +
+                    "WHERE id= ?",
+            room.getRoomCategory().getId(),
+            room.getRoomNumber(),
+            room.getId());
   }
 }
