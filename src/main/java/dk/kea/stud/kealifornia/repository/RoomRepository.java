@@ -73,7 +73,7 @@ public class RoomRepository {
                     "room_cat_id = ?," +
                     "room_number = ? " +
                     "WHERE id= ?",
-            room.getRoomCategory(),
+            room.getRoomCategory().getId(),
             room.getRoomNumber(),
             room.getId());
   }
