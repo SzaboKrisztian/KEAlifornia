@@ -1,15 +1,26 @@
 package dk.kea.stud.kealifornia.model;
 
+import dk.kea.stud.kealifornia.repository.RoomCategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Booking {
   private int id;
   private String refNo;
   private Guest guest;
-  private Map<RoomCategory, Integer> bookedRooms;
+  private Map<Integer, Integer> bookedRooms;
   private LocalDate checkIn;
   private LocalDate checkOut;
+
+  @Autowired
+  private RoomCategoryRepository roomCategoryRepo;
+
+  public Booking() {
+    this.bookedRooms = new HashMap<>();
+  }
 
   public int getId() {
     return id;
@@ -35,11 +46,11 @@ public class Booking {
     this.guest = guest;
   }
 
-  public Map<RoomCategory, Integer> getBookedRooms() {
+  public Map<Integer, Integer> getBookedRooms() {
     return bookedRooms;
   }
 
-  public void setBookedRooms(Map<RoomCategory, Integer> bookedRooms) {
+  public void setBookedRooms(Map<Integer, Integer> bookedRooms) {
     this.bookedRooms = bookedRooms;
   }
 
