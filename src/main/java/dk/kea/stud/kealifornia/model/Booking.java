@@ -1,7 +1,6 @@
 package dk.kea.stud.kealifornia.model;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Booking {
