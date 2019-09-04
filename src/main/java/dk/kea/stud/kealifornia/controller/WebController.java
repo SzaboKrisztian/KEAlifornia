@@ -23,7 +23,7 @@ public class WebController {
 
     @GetMapping("/admin/index")
     public String showAdminMenu() {
-        return "/admin-menu";
+        return "/admin/admin-menu";
     }
 
 
