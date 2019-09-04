@@ -23,12 +23,10 @@ public class ReceptionController {
     return "reception/find-booking";
   }
 
-  @ResponseBody
   @PostMapping("/findBooking")
   public String checkIn(@RequestParam String bookingNo, Model model) {
     model.addAttribute(bookingRepo.findBookingByRefNo(bookingNo));
-    model.addAttribute("checkInForm", new Occupancy());
-    model.addAttribute("rooms",roomRepo.findAllRooms());
+    model.addAttribute("rooms",occupancyRepo.getAvailableRoomsForAllCategories());
     return "reception/check-in";
   }
 

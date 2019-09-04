@@ -97,22 +97,22 @@ public class OccupancyRepository {
     jdbc.update("DELETE FROM occupancies WHERE id = ?;");
   }
 
-  public List<String> getAvailableRoomsForCategory(int category){
-    List<String> result = new ArrayList<>();
+  public List<Integer> getAvailableRoomsForCategory(int category){
+    List<Integer> result = new ArrayList<>();
 
-    String query = "SELECT room_number FROM rooms WHERE room_cat_id = ? AND " +
+    String query = "SELECT id FROM rooms WHERE room_cat_id = ? AND " +
         "id NOT IN (SELECT room_id FROM occupancy)";
     SqlRowSet rs = jdbc.queryForRowSet(query, category);
 
     while (rs.next()) {
-      result.add(rs.getString("room_number"));
+      result.add(Integer.valueOf(rs.getInt("id")));
     }
 
     return result;
   }
 
-  public HashMap<Integer, List<String>> getAvailableRoomsForAllCategories() {
-    HashMap<Integer, List<String>> result = new HashMap<>();
+  public HashMap<Integer, List<Integer>> getAvailableRoomsForAllCategories() {
+    HashMap<Integer, List<Integer>> result = new HashMap<>();
 
     for (Integer category : roomCategoryRepo.getAllRoomIntCategories()) {
       result.put(category, getAvailableRoomsForCategory(category));

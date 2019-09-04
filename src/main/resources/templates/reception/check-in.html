@@ -11,9 +11,16 @@
     <main class="flex-fill">
         <div class="container">
             <div class="jumbotron">
-                <h4 class="display-4">Welcome to KEAlifornia</h4>
                 <form action="/checkIn" method="post">
-
+                    <th:block th:each="category:${rooms.keySet}">
+                        <div class="form-check form-check-inline"
+                             th:each="room:${rooms.get(category)}">
+                            <input class="form-check-input" type="checkbox"
+                                   th:id="'Room_'+"
+                                   value="option1">
+                            <label class="form-check-label" for="inlineCheckbox1">1</label>
+                        </div>
+                    </th:block>
                 </form>
             </div>
 
