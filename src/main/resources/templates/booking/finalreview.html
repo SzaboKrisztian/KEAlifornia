@@ -30,9 +30,31 @@
                         <td th:text="${total} / 100"></td>
                     </tr>
                 </table>
-                <form action="/confirm" method="post">
+                <table>
+                    <tr>
+                        <td>Name: </td>
+                        <td th:text="${booking.getGuest().getLastName()} + ', ' + ${booking.getGuest().getFirstName()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Phone No:</td>
+                        <td th:text="${booking.getGuest().getPhoneNo()}"></td>
+                    </tr>
+                    <tr>
+                        <td>E-mail address:</td>
+                        <td th:text="${booking.getGuest().getEmail()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Document Id No:</td>
+                        <td th:text="${booking.getGuest().getDocumentIdNo()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Date of birth:</td>
+                        <td th:text="${booking.getGuest().getDateOfBirth()}"></td>
+                    </tr>
+                </table>
+                <form action="/summary" method="post">
                     <input type="hidden" th:object="${booking}">
-                    <button class="btn btn-primary" type="submit">Continue</button>
+                    <button class="btn btn-primary" type="submit">Confirm</button>
                 </form>
             </div>
         </div>

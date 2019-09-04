@@ -11,7 +11,8 @@
     <main class="flex-fill">
         <div class="container">
             <div class="jumbotron">
-                <h1 class="display-4">Review the details of your booking</h1>
+                <h1 class="display-4">Congratulations! Booking successfully created!</h1>
+                <h2 class="display-5">Your reference number is <span th:text="${booking.getRefNo()}"></span></h2>
                 <table>
                     <tr>
                         <td>Period: </td>
@@ -30,10 +31,29 @@
                         <td th:text="${total} / 100"></td>
                     </tr>
                 </table>
-                <form action="/confirm" method="post">
-                    <input type="hidden" th:object="${booking}">
-                    <button class="btn btn-primary" type="submit">Continue</button>
-                </form>
+                <table>
+                    <tr>
+                        <td>Name: </td>
+                        <td th:text="${booking.getGuest().getLastName()} + ', ' + ${booking.getGuest().getFirstName()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Phone No:</td>
+                        <td th:text="${booking.getGuest().getPhoneNo()}"></td>
+                    </tr>
+                    <tr>
+                        <td>E-mail address:</td>
+                        <td th:text="${booking.getGuest().getEmail()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Document Id No:</td>
+                        <td th:text="${booking.getGuest().getDocumentIdNo()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Date of birth:</td>
+                        <td th:text="${booking.getGuest().getDateOfBirth()}"></td>
+                    </tr>
+                </table>
+                <p>We are looking forward to seeing you!</p>
             </div>
         </div>
     </main>

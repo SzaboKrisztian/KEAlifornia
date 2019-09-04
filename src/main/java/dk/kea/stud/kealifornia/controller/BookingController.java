@@ -110,19 +110,29 @@ public class BookingController {
                             @ModelAttribute("guest") Guest guest,
                             @ModelAttribute("dob") String dob,
                             Model model) {
+    model.addAttribute("total", calculateTotalCost(booking));
+    model.addAttribute("roomcatrepo", roomCategoryRepo);
     try {
       guest.setDateOfBirth(LocalDate.parse(dob, AppGlobals.DATE_FORMAT));
-    } catch (DateTimeParseException e) {
-      model.addAttribute("total", calculateTotalCost(booking));
+      booking.setGuest(guest);
       model.addAttribute("booking", booking);
-      model.addAttribute("roomcatrepo", roomCategoryRepo);
+      return "/booking/finalreview.html";
+    } catch (DateTimeParseException e) {
+      model.addAttribute("booking", booking);
       model.addAttribute("guest", guest);
       model.addAttribute("error", "format");
       return "/booking/guestinfo.html";
     }
+  }
 
-    //TODO continue from here :)
-    return "redirect:/";
+  @PostMapping("/summary")
+  public String viewSummary(@ModelAttribute("booking") Booking booking,
+                            Model model) {
+    bookingRepo.addBooking(booking);
+    model.addAttribute("total", calculateTotalCost(booking));
+    model.addAttribute("booking", booking);
+    model.addAttribute("roomcatrepo", roomCategoryRepo);
+    return "/booking/summary.html";
   }
 
   private int calculateTotalCost(Booking booking) {
