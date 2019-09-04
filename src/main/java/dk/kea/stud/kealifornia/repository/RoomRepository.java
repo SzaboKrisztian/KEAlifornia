@@ -29,7 +29,7 @@ public class RoomRepository {
     return roomsList;
   }
 
-  public Room findRoomtById(int id) {
+  public Room findRoomById(int id) {
     Room result = null;
 
     String query = "SELECT * FROM rooms WHERE id = ?";

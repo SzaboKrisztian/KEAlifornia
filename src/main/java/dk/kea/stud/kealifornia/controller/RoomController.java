@@ -1,18 +1,12 @@
 package dk.kea.stud.kealifornia.controller;
 
 import dk.kea.stud.kealifornia.model.Room;
-import dk.kea.stud.kealifornia.model.RoomCategory;
 import dk.kea.stud.kealifornia.repository.RoomCategoryRepository;
 import dk.kea.stud.kealifornia.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class RoomController {
@@ -29,13 +23,13 @@ public class RoomController {
 
     @GetMapping("manager/rooms/{id}")
     public String findRoom(@PathVariable(name = "id") int id, Model model) {
-        model.addAttribute("room", roomRepo.findRoomtById(id));
+        model.addAttribute("room", roomRepo.findRoomById(id));
         return ("");
     }
 
     @PostMapping("manager/rooms/delete")
     public String deleteRoom(@PathVariable(name = "id") int id, Model model) {
-        Room room = roomRepo.findRoomtById(id);
+        Room room = roomRepo.findRoomById(id);
         if (roomRepo.canDelete(room)) {
             roomRepo.deleteRoom(id);
             return "";
@@ -58,7 +52,7 @@ public class RoomController {
 
     @GetMapping("/manager/rooms/edit/{id}")
     public String editRoom(@PathVariable("id") int id, Model model) {
-        Room selectedRoom = roomRepo.findRoomtById(id);
+        Room selectedRoom = roomRepo.findRoomById(id);
         boolean hasOccupancy = !roomRepo.canDelete(selectedRoom);
         model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
         model.addAttribute("currentRoom", selectedRoom);
