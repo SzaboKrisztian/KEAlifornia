@@ -19,9 +19,30 @@
 
             </div>
         </div>
+      <form th:action="'/manager/room'" method="post" align="center">
+        <div class="container">
+            <label for="roomNumber">Room number</label>
+            <input type="text" class="form-control" id="roomNumber" name="getRoomNumber" placeholder="Room number"
+                   required>
+        </div>
+          <button class="btn btn-primary" type="submit">Search</button>
+      </form>
+        <a class="btn btn-primary mb-3" th:href="'/manager/rooms/add'">Add new room</a>
     </main>
     <div th:replace="fragments :: footer"></div>
 </div>
 <div th:replace="fragments :: bootstrap_body"></div>
 </body>
 </html>
+
+<style>
+    form {
+        margin: 0 auto;
+        width:400px;
+    }
+
+    button {
+        margin-top:0.5em;
+    }
+</style>
+
