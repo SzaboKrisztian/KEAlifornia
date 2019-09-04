@@ -3,27 +3,36 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-
+    <link th:replace="fragments :: bootstrap_head">
 </head>
 <body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill text-center">
+        <div class="container">
+            <div class="jumbotron">
+            <form id="login-form" th:action="@{/login}" method="post">
+                <div th:if="${param.logout}">
+                    <h5>Logged out.</h5>
+                </div>
+                <div th:if="${param.error}">
+                    <h5>Username or Password is wrong. Please check again!</h5>
+                </div>
+                <label for="username">Username:</label><br>
+                <input type="text" name="username" id="username" autofocus><br>
+
+                <label for="password">Password:</label><br>
+                <input type="password" name="password" id="password"><br>
 
 
-                <form id="login-form" th:action="@{/login}" method="post">
-                    <div th:if="${param.logout}">
-                        <h5>Logged out.</h5>
-                    </div>
-                    <div th:if="${param.error}">
-                        <h5>Username or Password is wrong. Please check again!</h5>
-                    </div>
-                        <label for="username">Username:</label><br>
-                        <input type="text" name="username" id="username"><br>
+                <input type="submit" name="submit" value="Login">
+            </form>
 
-                        <label for="password">Password:</label><br>
-                        <input type="password" name="password" id="password"><br>
-
-
-                        <input type="submit" name="submit" value="Login">
-                </form>
-
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
 </body>
 </html>

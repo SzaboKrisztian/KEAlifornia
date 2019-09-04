@@ -21,10 +21,4 @@ public class WebController {
         return "/login";
     }
 
-    @GetMapping("/admin/index")
-    public String showAdminMenu() {
-        return "/admin/admin-menu";
-    }
-
-
 }
