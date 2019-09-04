@@ -11,17 +11,16 @@
     <main class="flex-fill">
         <div class="container">
             <div class="jumbotron">
-                <form action="/checkIn" method="post">
-                    <input type="hidden" id="bookingId" name="bookingId"
-                           th:value="${booking.getId()}">
-                    <div th:each="category:${rooms.keySet()}">
+                <form th:action="'/checkIn/'+${data.getBookingId()}"
+                      th:object="${data}" method="post">
+                    <div th:each="category:${data.availableRoomsForEachCategory.keySet()}">
                         <p th:text="${roomCatRepo.findRoomCategoryById(category).getName()}"></p>
                         <div class="form-check form-check-inline"
-                             th:each="room:${rooms.get(category)}">
+                             th:each="room:${data.availableRoomsForEachCategory.get(category)}">
                             <input class="form-check-input" type="checkbox"
                                    th:id="'Room_'+${room}"
                                    th:value="${room}"
-                                   th:field="${selectedRooms}">
+                                   th:field="${data.selectedRooms}">
                             <label class="form-check-label"
                                    th:text="${roomRepo.findRoomById(room).getRoomNumber()}"
                                    th:for="'Room_'+${room}">

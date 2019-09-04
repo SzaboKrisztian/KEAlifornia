@@ -1,5 +1,6 @@
 package dk.kea.stud.kealifornia.controller;
 
+import dk.kea.stud.kealifornia.model.CheckInForm;
 import dk.kea.stud.kealifornia.model.Occupancy;
 import dk.kea.stud.kealifornia.repository.BookingRepository;
 import dk.kea.stud.kealifornia.repository.OccupancyRepository;
@@ -31,26 +32,30 @@ public class ReceptionController {
 
   @PostMapping("/findBooking")
   public String checkIn(@RequestParam String bookingNo, Model model) {
-    List<String> selectedRooms = new ArrayList<>();
+    CheckInForm data = new CheckInForm();
 
-    for (Integer category:occupancyRepo.getAvailableRoomsForAllCategories().keySet()) {
-      for (Integer room:occupancyRepo.getAvailableRoomsForAllCategories().get(category)) {
-        selectedRooms.add("");
-      }
-    }
-    model.addAttribute("booking", bookingRepo.findBookingByRefNo(bookingNo));
-    model.addAttribute("rooms", occupancyRepo.getAvailableRoomsForAllCategories());
-    model.addAttribute("selectedRooms", selectedRooms);
+    data.setBookingId(bookingRepo.findBookingByRefNo(bookingNo).getId());
+    data.setAvailableRoomsForEachCategory(occupancyRepo.getAvailableRoomsForAllCategories());
+    data.setSelectedRooms(new ArrayList<>());
+
+    model.addAttribute("data", data);
     model.addAttribute("roomRepo", roomRepo);
     model.addAttribute("roomCatRepo", roomCategoryRepo);
+
     return "reception/check-in";
   }
 
-  @ResponseBody
-  @PostMapping("/checkIn")
-  public String updateDatabase(@RequestParam ("bookingId") String id,
-                               @RequestParam List<String> selectedRooms) {
-    return selectedRooms.toString();
+
+  @PostMapping("/checkIn/{bookingId}")
+  public String updateDatabase(@ModelAttribute CheckInForm data,
+                               @PathVariable (name = "bookingId") int bookingId) {
+    for (Occupancy occupancy :
+        occupancyRepo.convertStringSelectedRooms(data.getSelectedRooms(), bookingId)) {
+      occupancyRepo.addOccupancy(occupancy);
+    }
+    bookingRepo.deleteBooking(bookingId);
+
+    return "redirect:/findBooking";
   }
 
   @GetMapping("/newGuest")

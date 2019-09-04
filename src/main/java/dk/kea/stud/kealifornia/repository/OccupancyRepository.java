@@ -1,5 +1,6 @@
 package dk.kea.stud.kealifornia.repository;
 
+import dk.kea.stud.kealifornia.model.Booking;
 import dk.kea.stud.kealifornia.model.Guest;
 import dk.kea.stud.kealifornia.model.Occupancy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class OccupancyRepository {
   private GuestRepository guestRepo;
   @Autowired
   private RoomCategoryRepository roomCategoryRepo;
+  @Autowired
+  private BookingRepository bookingRepo;
 
   public Occupancy findOccupancyById(int id) {
     Occupancy result = null;
@@ -96,11 +99,11 @@ public class OccupancyRepository {
     jdbc.update("DELETE FROM occupancies WHERE id = ?;");
   }
 
-  public List<Integer> getAvailableRoomsForCategory(int category){
+  public List<Integer> getAvailableRoomsForCategory(int category) {
     List<Integer> result = new ArrayList<>();
 
     String query = "SELECT id FROM rooms WHERE room_cat_id = ? AND " +
-        "id NOT IN (SELECT room_id FROM occupancy)";
+        "id NOT IN (SELECT room_id FROM occupancies)";
     SqlRowSet rs = jdbc.queryForRowSet(query, category);
 
     while (rs.next()) {
@@ -118,5 +121,25 @@ public class OccupancyRepository {
     }
 
     return result;
+  }
+
+  public List<Occupancy> convertStringSelectedRooms(List<String> selectedRooms,
+                                                    int bookingId) {
+    Booking booking = bookingRepo.findBookingById(bookingId);
+    List<Occupancy> occupiedRooms = new ArrayList<>();
+
+    if (selectedRooms != null) {
+      for (String id : selectedRooms) {
+        Occupancy occupancy = new Occupancy();
+        occupancy.setRoom(roomRepo.findRoomById(Integer.parseInt(id)));
+        occupancy.setGuest(booking.getGuest());
+        occupancy.setCheckIn(booking.getCheckIn());
+        occupancy.setCheckOut(booking.getCheckOut());
+
+        occupiedRooms.add(occupancy);
+      }
+      return occupiedRooms;
+    }
+    return null;
   }
 }
