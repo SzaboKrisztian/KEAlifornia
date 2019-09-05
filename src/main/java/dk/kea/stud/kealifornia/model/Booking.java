@@ -1,9 +1,7 @@
 package dk.kea.stud.kealifornia.model;
 
-import dk.kea.stud.kealifornia.repository.RoomCategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +12,6 @@ public class Booking {
   private Map<Integer, Integer> bookedRooms;
   private LocalDate checkIn;
   private LocalDate checkOut;
-
-  @Autowired
-  private RoomCategoryRepository roomCategoryRepo;
 
   public Booking() {
     this.bookedRooms = new HashMap<>();
@@ -68,5 +63,12 @@ public class Booking {
 
   public void setCheckOut(LocalDate checkOut) {
     this.checkOut = checkOut;
+  }
+
+  public int getNoNights() {
+    if (checkIn != null && checkOut != null) {
+      return (int)ChronoUnit.DAYS.between(checkIn, checkOut);
+    }
+    else return 0;
   }
 }

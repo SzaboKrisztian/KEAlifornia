@@ -1,6 +1,7 @@
 package dk.kea.stud.kealifornia.repository;
 
 import dk.kea.stud.kealifornia.model.Booking;
+import dk.kea.stud.kealifornia.model.Guest;
 import dk.kea.stud.kealifornia.model.RoomCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,8 +25,6 @@ public class BookingRepository {
   private JdbcTemplate jdbc;
   @Autowired
   private GuestRepository guestRepo;
-  @Autowired
-  private RoomCategoryRepository roomCategoryRepo;
 
   public Booking findBookingById(int id) {
     Booking result = null;
@@ -79,7 +78,7 @@ public class BookingRepository {
     String query = "SELECT * FROM booked_rooms WHERE booking_id = ?;";
     SqlRowSet rooms_rs = jdbc.queryForRowSet(query, result.getId());
 
-    while (rs.next()) {
+    while (rooms_rs.next()) {
       bookedRooms.put(rooms_rs.getInt("category_id"),
           rooms_rs.getInt("no_of_rooms"));
     }
@@ -90,6 +89,9 @@ public class BookingRepository {
   }
 
   public Booking addBooking(Booking booking) {
+    Guest updateGuest = guestRepo.addGuest(booking.getGuest());
+    booking.setGuest(updateGuest);
+    booking.setRefNo(generateUniqueReferenceNo());
     PreparedStatementCreator psc = new PreparedStatementCreator() {
       @Override
       public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -98,7 +100,7 @@ public class BookingRepository {
         ps.setInt(1, booking.getGuest().getId());
         ps.setDate(2, Date.valueOf(booking.getCheckIn()));
         ps.setDate(3, Date.valueOf(booking.getCheckOut()));
-        ps.setString(4, generateUniqueReferenceNo());
+        ps.setString(4, booking.getRefNo());
         return ps;
       }
     };
@@ -138,6 +140,7 @@ public class BookingRepository {
       for (int i = 0; i < length; i++) {
         result.append(charArr[random.nextInt(charArr.length)]);
       }
+
       isUnique = isReferenceNoUnique(result.toString());
     }
 
@@ -148,6 +151,8 @@ public class BookingRepository {
     String query = "SELECT * FROM bookings WHERE ref_no = ?;";
     SqlRowSet rs = jdbc.queryForRowSet(query, refNo);
 
-    return rs.first();
+    return !rs.first();
   }
+
+
 }

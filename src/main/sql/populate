@@ -1,2 +1,22 @@
 INSERT INTO user (user_id, username, password, role, enabled) VALUES
 ( NULL , "admin", "$2a$10$.4KH/WfJD8UWYhFZrDa0VuMC.uBLSM9OyvJYqK5FopItG8XNAsm3W", "ROLE_ADMIN", 1 );
+
+INSERT INTO kealifornia.room_categories (id, name, description, price_per_night) VALUES (1, 'Crap Room', 'Don''t pick this. You''ll regret it.', 40000);
+INSERT INTO kealifornia.room_categories (id, name, description, price_per_night) VALUES (2, 'Better Room', 'Slightly better. You''ll survive in here.', 80000);
+INSERT INTO kealifornia.room_categories (id, name, description, price_per_night) VALUES (3, 'Decent Room', 'You might even be able to get some shut-eye in here', 160000);
+
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (1, 1, '0001');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (2, 1, '0002');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (3, 1, '0003');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (4, 1, '0004');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (5, 1, '0005');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (6, 2, '0101');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (7, 2, '0102');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (8, 2, '0103');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (9, 2, '0104');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (10, 2, '0105');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (11, 3, '0201');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (12, 3, '0202');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (13, 3, '0203');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (14, 3, '0204');
+INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (15, 3, '0205');
