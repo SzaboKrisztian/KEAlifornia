@@ -34,13 +34,26 @@ public class RoomRepository {
     return roomsList;
   }
 
-  public Room findRoomtById(int id) {
+  public Room findRoomById(int id) {
     Room result = null;
 
     String query = "SELECT * FROM rooms WHERE id = ?";
     SqlRowSet rs = jdbc.queryForRowSet(query, id);
 
     if (rs.first()) {
+      result = extractNextRoomFromRowSet(rs);
+    }
+
+    return result;
+  }
+
+  public Room findRoomByNumber(String roomNumber){
+    Room result = null;
+
+    String query = "SELECT * FROM rooms where room_number = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, roomNumber);
+
+    if(rs.first()){
       result = extractNextRoomFromRowSet(rs);
     }
 
@@ -57,9 +70,9 @@ public class RoomRepository {
     return result;
   }
 
-  public void addRoom(Room room) {
+  public void addRoom(String roomCategoryId, String roomNumber) {
     jdbc.update("INSERT INTO rooms(room_cat_id, room_number) VALUES (?, ?);",
-        room.getRoomCategory(), room.getRoomNumber());
+        roomCategoryId, roomNumber);
   }
 
   public void deleteRoom(int id) {
@@ -75,13 +88,13 @@ public class RoomRepository {
     return noRooms == 0;
   }
 
-  public void updateRoom(Room room) {
+  public void updateRoom(String roomCategoryId, String roomNumber, String roomId) {
     jdbc.update("UPDATE rooms SET " +
                     "room_cat_id = ?," +
                     "room_number = ? " +
-                    "WHERE id= ?",
-            room.getRoomCategory().getId(),
-            room.getRoomNumber(),
-            room.getId());
+                    "WHERE id = ?",
+            roomCategoryId,
+            roomNumber,
+            roomId);
   }
 }

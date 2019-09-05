@@ -57,7 +57,7 @@ public class OccupancyRepository {
     Occupancy result = new Occupancy();
 
     result.setId(rs.getInt("id"));
-    result.setRoom(roomRepo.findRoomtById(rs.getInt("room_id")));
+    result.setRoom(roomRepo.findRoomById(rs.getInt("room_id")));
     result.setGuest(guestRepo.findGuestById(rs.getInt("guest_id")));
     result.setCheckIn(rs.getDate("check_in").toLocalDate());
     result.setCheckOut(rs.getDate("check_out").toLocalDate());
