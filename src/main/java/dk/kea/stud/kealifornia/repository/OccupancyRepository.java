@@ -89,7 +89,7 @@ public class OccupancyRepository {
     return occupancy;
   }
 
-  public void deleteOccupancy(Occupancy occupancy) {
-    jdbc.update("DELETE FROM occupancies WHERE id = ?;");
+  public void deleteOccupancy(int id) {
+    jdbc.update("DELETE FROM occupancies WHERE id = ?;", id);
   }
 }

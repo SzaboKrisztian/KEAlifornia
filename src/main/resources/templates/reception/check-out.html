@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>KEAlifornia Check-out</title>
+    <link th:replace="fragments :: bootstrap_head">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill text-center">
+        <div class="container">
+            <div class="jumbotron">
+                <h2 class="display-4">Check-out</h2>
+                <form method="post" action="/admin/check-out/save" th:object="${newRoomCategory}">
+                <div th:each="occupancy: ${occupancies}" style="display: block">
+                    <input type="checkbox" th:name="occupancyChecked" th:value="${occupancy.id}"/>
+                    <span th:text="${'Room no. #' + occupancy.room.roomNumber}"></span>
+                </div>
+                    <button type="submit">Check-out</button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>
