@@ -13,17 +13,14 @@
             <div class="jumbotron">
                 <form action="/rooms" method="post">
                     <h1 class="display-4">Add room(s)</h1>
-                    <p>Selected period: <span th:text="${booking.getCheckIn()} + ' - ' + ${booking.getCheckOut()}"></span></p>
+                    <p>Selected period: <span th:text="${booking.getCheckIn()} + ' - ' + ${booking.getCheckOut()} + ': ' + ${booking.getNoNights()} + ' nights'"></span></p>
                     <th:block th:if="${booking.getBookedRooms().isEmpty()}">
                         <p>You have no rooms booked yet.</p>
                     </th:block>
                     <th:block th:unless="${booking.getBookedRooms().isEmpty()}">
                         <p>You have so far booked:</p>
                         <th:block th:each="entry:${booking.getBookedRooms().entrySet()}">
-                            <p th:if="${entry.getValue() == 1}"
-                               th:text="'- One ' + ${roomcatrepo.findRoomCategoryById(entry.getKey()).getName()}"></p>
-                            <p th:unless="${entry.getValue() == 1}"
-                               th:text="'- ' + ${entry.getValue()} + ' ' +
+                            <p th:text="'- ' + ${entry.getValue()} + 'x ' +
                                 ${roomcatrepo.findRoomCategoryById(entry.getKey()).getName()} + 's'"></p>
                         </th:block>
 
@@ -31,14 +28,18 @@
                     <input type="hidden" th:object="${booking}">
                     <select class="form-control" name="roomtype" required>
                         <option th:each="cat:${roomcatrepo.getAllRoomCategories()}" th:text="${cat.getName()} + ': ' +
-                         ${cat.getPricePerNight()} / 100 + ' DKK'" th:value="${cat.getId()}"></option>
+                         ${cat.getPricePerNight()} / 100 + ' DKK. ' + ${available.get(cat.getId())} + ' available'" th:value="${cat.getId()}"></option>
                     </select>
                     <p>Number of rooms:</p>
                     <input type="number" step="1" min="1" name="norooms">
                     <button class="btn btn-secondary" type="submit" name="action" value="add">Add</button>
                     <button class="btn btn-danger" type="submit" name="action" value="reset">Reset</button>
                     <button class="btn btn-primary" type="submit" name="action" value="done">Done</button>
-                    <div th:if="${error}" class="alert"><p th:if="${error.equals('invalid')}">Invalid input</p></div>
+                    <div th:if="${error}" class="alert">
+                        <p th:if="${error.equals('invalid')}">Invalid input.</p>
+                        <p th:if="${error.equals('norooms')}">You must book at least one room.</p>
+                        <p th:if="${error.equals('notenough')}">There are not enough available rooms of the chosen category.</p>
+                    </div>
                 </form>
             </div>
         </div>

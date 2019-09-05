@@ -25,8 +25,6 @@ public class BookingRepository {
   private JdbcTemplate jdbc;
   @Autowired
   private GuestRepository guestRepo;
-  @Autowired
-  private RoomCategoryRepository roomCategoryRepo;
 
   public Booking findBookingById(int id) {
     Booking result = null;
@@ -80,7 +78,7 @@ public class BookingRepository {
     String query = "SELECT * FROM booked_rooms WHERE booking_id = ?;";
     SqlRowSet rooms_rs = jdbc.queryForRowSet(query, result.getId());
 
-    while (rs.next()) {
+    while (rooms_rs.next()) {
       bookedRooms.put(rooms_rs.getInt("category_id"),
           rooms_rs.getInt("no_of_rooms"));
     }
@@ -155,4 +153,6 @@ public class BookingRepository {
 
     return !rs.first();
   }
+
+
 }

@@ -1,12 +1,8 @@
 package dk.kea.stud.kealifornia.controller;
 
 import dk.kea.stud.kealifornia.AppGlobals;
-import dk.kea.stud.kealifornia.model.Booking;
-import dk.kea.stud.kealifornia.model.Guest;
-import dk.kea.stud.kealifornia.model.RoomCategory;
-import dk.kea.stud.kealifornia.repository.BookingRepository;
-import dk.kea.stud.kealifornia.repository.GuestRepository;
-import dk.kea.stud.kealifornia.repository.RoomCategoryRepository;
+import dk.kea.stud.kealifornia.model.*;
+import dk.kea.stud.kealifornia.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +22,10 @@ public class BookingController {
   GuestRepository guestRepo;
   @Autowired
   RoomCategoryRepository roomCategoryRepo;
+  @Autowired
+  RoomRepository roomRepo;
+  @Autowired
+  OccupancyRepository occupancyRepo;
 
   @GetMapping("/book")
   public String chooseDates() {
@@ -51,6 +51,8 @@ public class BookingController {
         return "/booking/dates.html";
       }
 
+      model.addAttribute("available", countAvailableRoomsForPeriod(booking.getCheckIn(),
+          booking.getCheckOut()));
       model.addAttribute("roomcatrepo", roomCategoryRepo);
       model.addAttribute("booking", booking);
       return "/booking/rooms.html";
@@ -62,36 +64,59 @@ public class BookingController {
                          @RequestParam(name = "norooms") String noRooms,
                          @RequestParam(name = "action") String action,
                          Model model) {
+    Map<Integer, Integer> available = countAvailableRoomsForPeriod(booking.getCheckIn(),
+        booking.getCheckOut());
     if (action.equals("add")) {
       int numberOfRooms;
       try {
         numberOfRooms = Integer.parseInt(noRooms);
       } catch (NumberFormatException e) {
+        model.addAttribute("available", available);
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
         model.addAttribute("error", "invalid");
         return "/booking/rooms.html";
       }
-      RoomCategory chosenCat = roomCategoryRepo.findRoomCategoryById(Integer.valueOf(typeId));
-      if (booking.getBookedRooms().containsKey(chosenCat.getId())) {
-        int oldAmount = booking.getBookedRooms().get(chosenCat.getId());
-        booking.getBookedRooms().replace(chosenCat.getId(), oldAmount + numberOfRooms);
+      int roomTypeId = Integer.parseInt(typeId);
+      int noAlreadyBooked = booking.getBookedRooms().get(roomTypeId) == null ? 0 :
+          booking.getBookedRooms().get(roomTypeId);
+      if (available.get(roomTypeId) >= numberOfRooms + noAlreadyBooked) {
+        if (booking.getBookedRooms().containsKey(roomTypeId)) {
+          int oldAmount = booking.getBookedRooms().get(roomTypeId);
+          booking.getBookedRooms().replace(roomTypeId, oldAmount + numberOfRooms);
+        } else {
+          booking.getBookedRooms().put(roomTypeId, numberOfRooms);
+        }
+        model.addAttribute("available", available);
+        model.addAttribute("booking", booking);
+        model.addAttribute("roomcatrepo", roomCategoryRepo);
+        return "/booking/rooms.html";
       } else {
-        booking.getBookedRooms().put(chosenCat.getId(), numberOfRooms);
+        model.addAttribute("available", available);
+        model.addAttribute("booking", booking);
+        model.addAttribute("roomcatrepo", roomCategoryRepo);
+        model.addAttribute("error", "notenough");
+        return "/booking/rooms.html";
       }
-      model.addAttribute("booking", booking);
-      model.addAttribute("roomcatrepo", roomCategoryRepo);
-      return "/booking/rooms.html";
     } else if (action.equals("reset")) {
       booking.setBookedRooms(new HashMap<>());
+      model.addAttribute("available", available);
       model.addAttribute("booking", booking);
       model.addAttribute("roomcatrepo", roomCategoryRepo);
       return "/booking/rooms.html";
     } else {
-      model.addAttribute("total", calculateTotalCost(booking));
-      model.addAttribute("booking", booking);
-      model.addAttribute("roomcatrepo", roomCategoryRepo);
-      return "/booking/review.html";
+      if (booking.getBookedRooms().isEmpty()) {
+        model.addAttribute("available", available);
+        model.addAttribute("booking", booking);
+        model.addAttribute("roomcatrepo", roomCategoryRepo);
+        model.addAttribute("error", "norooms");
+        return "/booking/rooms.html";
+      } else {
+        model.addAttribute("total", calculateTotalCost(booking));
+        model.addAttribute("booking", booking);
+        model.addAttribute("roomcatrepo", roomCategoryRepo);
+        return "/booking/review.html";
+      }
     }
   }
 
@@ -142,5 +167,40 @@ public class BookingController {
           findRoomCategoryById(entry.getKey()).getPricePerNight();
     }
     return total;
+  }
+
+  public Map<Integer, Integer> countAvailableRoomsForPeriod(LocalDate checkIn,
+                                                            LocalDate checkOut) {
+    Map<Integer, Integer> result = new HashMap<>();
+    for (Room room: roomRepo.findAllRooms()) {
+      int roomCat = room.getRoomCategory().getId();
+      if (!result.containsKey(roomCat)) {
+        result.put(roomCat, 1);
+      } else {
+        result.put(roomCat, result.get(roomCat) + 1);
+      }
+    }
+
+    for (Booking booking: bookingRepo.getAllBookings()) {
+      if ((checkIn.isAfter(booking.getCheckIn()) && checkIn.isBefore(booking.getCheckOut())) ||
+          (checkOut.isAfter(booking.getCheckIn()) && checkOut.isBefore(booking.getCheckOut())) ||
+          (checkIn.isBefore(booking.getCheckIn()) && checkOut.isAfter(booking.getCheckOut()))) {
+        for (Map.Entry<Integer, Integer> rooms: booking.getBookedRooms().entrySet()) {
+          int roomCat = rooms.getKey();
+          result.put(roomCat, result.get(roomCat) - rooms.getValue());
+        }
+      }
+    }
+
+    for (Occupancy occupancy: occupancyRepo.getAllOccupancies()) {
+      if ((checkIn.isAfter(occupancy.getCheckIn()) && checkIn.isBefore(occupancy.getCheckOut())) ||
+          (checkOut.isAfter(occupancy.getCheckIn()) && checkOut.isBefore(occupancy.getCheckOut())) ||
+          (checkIn.isBefore(occupancy.getCheckIn()) && checkOut.isAfter(occupancy.getCheckOut()))) {
+        int roomCat = occupancy.getRoom().getRoomCategory().getId();
+        result.put(roomCat, result.get(roomCat) - 1);
+      }
+    }
+
+    return result;
   }
 }
