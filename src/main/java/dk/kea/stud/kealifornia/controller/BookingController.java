@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -30,6 +31,8 @@ public class BookingController {
   @GetMapping("/book")
   public String chooseDates() {
     return "/booking/dates.html";
+
+
   }
 
   @PostMapping("/book")
