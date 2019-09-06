@@ -51,7 +51,7 @@ public class BookingController {
         return "/booking/dates.html";
       }
 
-      model.addAttribute("available", countAvailableRoomsForPeriod(booking.getCheckIn(),
+      model.addAttribute("available", occupancyRepo.countAvailableRoomsForPeriod(booking.getCheckIn(),
           booking.getCheckOut()));
       model.addAttribute("roomcatrepo", roomCategoryRepo);
       model.addAttribute("booking", booking);
@@ -64,7 +64,7 @@ public class BookingController {
                          @RequestParam(name = "norooms") String noRooms,
                          @RequestParam(name = "action") String action,
                          Model model) {
-    Map<Integer, Integer> available = countAvailableRoomsForPeriod(booking.getCheckIn(),
+    Map<Integer, Integer> available = occupancyRepo.countAvailableRoomsForPeriod(booking.getCheckIn(),
         booking.getCheckOut());
     if (action.equals("add")) {
       int numberOfRooms;
@@ -169,38 +169,5 @@ public class BookingController {
     return total;
   }
 
-  public Map<Integer, Integer> countAvailableRoomsForPeriod(LocalDate checkIn,
-                                                            LocalDate checkOut) {
-    Map<Integer, Integer> result = new HashMap<>();
-    for (Room room: roomRepo.findAllRooms()) {
-      int roomCat = room.getRoomCategory().getId();
-      if (!result.containsKey(roomCat)) {
-        result.put(roomCat, 1);
-      } else {
-        result.put(roomCat, result.get(roomCat) + 1);
-      }
-    }
 
-    for (Booking booking: bookingRepo.getAllBookings()) {
-      if ((checkIn.isAfter(booking.getCheckIn()) && checkIn.isBefore(booking.getCheckOut())) ||
-          (checkOut.isAfter(booking.getCheckIn()) && checkOut.isBefore(booking.getCheckOut())) ||
-          (checkIn.isBefore(booking.getCheckIn()) && checkOut.isAfter(booking.getCheckOut()))) {
-        for (Map.Entry<Integer, Integer> rooms: booking.getBookedRooms().entrySet()) {
-          int roomCat = rooms.getKey();
-          result.put(roomCat, result.get(roomCat) - rooms.getValue());
-        }
-      }
-    }
-
-    for (Occupancy occupancy: occupancyRepo.getAllOccupancies()) {
-      if ((checkIn.isAfter(occupancy.getCheckIn()) && checkIn.isBefore(occupancy.getCheckOut())) ||
-          (checkOut.isAfter(occupancy.getCheckIn()) && checkOut.isBefore(occupancy.getCheckOut())) ||
-          (checkIn.isBefore(occupancy.getCheckIn()) && checkOut.isAfter(occupancy.getCheckOut()))) {
-        int roomCat = occupancy.getRoom().getRoomCategory().getId();
-        result.put(roomCat, result.get(roomCat) - 1);
-      }
-    }
-
-    return result;
-  }
 }

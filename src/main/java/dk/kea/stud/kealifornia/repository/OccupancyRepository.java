@@ -3,6 +3,7 @@ package dk.kea.stud.kealifornia.repository;
 import dk.kea.stud.kealifornia.model.Booking;
 import dk.kea.stud.kealifornia.model.Guest;
 import dk.kea.stud.kealifornia.model.Occupancy;
+import dk.kea.stud.kealifornia.model.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -15,9 +16,11 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class OccupancyRepository {
@@ -123,23 +126,51 @@ public class OccupancyRepository {
     return result;
   }
 
-  public List<Occupancy> convertStringSelectedRooms(List<String> selectedRooms,
-                                                    int bookingId) {
-    Booking booking = bookingRepo.findBookingById(bookingId);
-    List<Occupancy> occupiedRooms = new ArrayList<>();
+  public Map<Integer, Integer> countAvailableRoomsForPeriod(LocalDate checkIn,
+                                                            LocalDate checkOut) {
+    Map<Integer, Integer> result = new HashMap<>();
+    for (Room room: roomRepo.findAllRooms()) {
+      int roomCat = room.getRoomCategory().getId();
+      if (!result.containsKey(roomCat)) {
+        result.put(roomCat, 1);
+      } else {
+        result.put(roomCat, result.get(roomCat) + 1);
+      }
+    }
+
+    for (Booking booking: bookingRepo.getAllBookings()) {
+      if ((checkIn.isAfter(booking.getCheckIn()) && checkIn.isBefore(booking.getCheckOut())) ||
+          (checkOut.isAfter(booking.getCheckIn()) && checkOut.isBefore(booking.getCheckOut())) ||
+          (checkIn.isBefore(booking.getCheckIn()) && checkOut.isAfter(booking.getCheckOut()))) {
+        for (Map.Entry<Integer, Integer> rooms: booking.getBookedRooms().entrySet()) {
+          int roomCat = rooms.getKey();
+          result.put(roomCat, result.get(roomCat) - rooms.getValue());
+        }
+      }
+    }
+
+    for (Occupancy occupancy: getAllOccupancies()) {
+      if ((checkIn.isAfter(occupancy.getCheckIn()) && checkIn.isBefore(occupancy.getCheckOut())) ||
+          (checkOut.isAfter(occupancy.getCheckIn()) && checkOut.isBefore(occupancy.getCheckOut())) ||
+          (checkIn.isBefore(occupancy.getCheckIn()) && checkOut.isAfter(occupancy.getCheckOut()))) {
+        int roomCat = occupancy.getRoom().getRoomCategory().getId();
+        result.put(roomCat, result.get(roomCat) - 1);
+      }
+    }
+
+    return result;
+  }
+
+  public List<Room> convertStringSelectedRooms(List<String> selectedRooms) {
+    List<Room> occupiedRooms = new ArrayList<>();
 
     if (selectedRooms != null) {
       for (String id : selectedRooms) {
-        Occupancy occupancy = new Occupancy();
-        occupancy.setRoom(roomRepo.findRoomById(Integer.parseInt(id)));
-        occupancy.setGuest(booking.getGuest());
-        occupancy.setCheckIn(booking.getCheckIn());
-        occupancy.setCheckOut(booking.getCheckOut());
-
-        occupiedRooms.add(occupancy);
+        occupiedRooms.add(roomRepo.findRoomById(Integer.parseInt(id)));
       }
       return occupiedRooms;
     }
     return null;
   }
+
 }

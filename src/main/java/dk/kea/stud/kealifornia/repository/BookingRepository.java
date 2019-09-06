@@ -153,6 +153,19 @@ public class BookingRepository {
 
     return !rs.first();
   }
-
-
+//
+////  private int getTotalBookedRoomsForCategory(int category) {
+////    int totalBookedRooms;
+////    String query = "SELECT"
+////  }
+//
+//  public Map<Integer, Integer> getAllBookedRooms() {
+//    HashMap<Integer, Integer> result = new HashMap<>();
+//
+//    for (Integer category : roomCategoryRepo.getAllRoomIntCategories()) {
+//      result.put(category, getBookedRoomsForCategory(category));
+//    }
+//
+//    return result;
+//  }
 }

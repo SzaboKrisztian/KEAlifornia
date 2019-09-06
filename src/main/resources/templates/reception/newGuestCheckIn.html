@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Hotel KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <form action="/rooms" method="post">
+                    <h1 class="display-4">Add room(s)</h1>
+                    <p>Selected period: <span
+                            th:text="${occupancy.getCheckIn()} + ' - ' + ${occupancy.getCheckOut()} + ': ' + ${occupancy.getNoNights()} + ' nights'"></span>
+                    </p>
+                    <p>Available rooms for period:
+                        <span th:each="category:${totalAvailable.keySet()}"
+                              th:text="' ' + ${totalAvailable.get(category)} + ' ' + ${roomCatRepo.findRoomCategoryById(category).getName()}">
+                        </span>
+                    </p>
+                    <form action="/occupy/confirm" method="post">
+                        <p>Vacant rooms at the moment</p>
+                        <div th:each="category:${data.availableRoomsForEachCategory.keySet()}">
+                            <p th:text="${roomCatRepo.findRoomCategoryById(category).getName()}"></p>
+                            <div class="form-check form-check-inline"
+                                 th:each="room:${data.availableRoomsForEachCategory.get(category)}">
+                                <input class="form-check-input" type="checkbox"
+                                       th:id="'Room_'+${room}"
+                                       th:value="${room}"
+                                       th:field="${data.selectedRooms}">
+                                <label class="form-check-label"
+                                       th:text="${roomRepo.findRoomById(room).getRoomNumber()}"
+                                       th:for="'Room_'+${room}">
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit">Occupy selected rooms</button>
+                        <input type="hidden" th:object="${occupancy}">
+                    </form>
+                </form>
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>
