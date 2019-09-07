@@ -4,15 +4,23 @@
     <meta charset="UTF-8">
     <title>Welcome to KEAlifornia</title>
     <link th:replace="fragments :: bootstrap_head">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
 </head>
 <body>
 <div class="d-flex flex-column sticky-footer-wrapper">
     <div th:replace="fragments :: navbar"></div>
-    <main class="flex-fill">
+    <main class="flex-fill text-center">
         <div class="container">
             <div class="jumbotron">
-                <h1 class="display-4">Welcome to KEAlifornia</h1>
-
+                <h1 class="display-4">Welcome to KEAlifornia Hotel.</h1>
+                <h3>Hotel Managers:</h3>
+                <span>Chris Szabo</span><br>
+                <span>Onescu Radu</span><br>
+                <span>Doroftei Cristina</span><br>
+                <span>Mocanu Marian</span>
             </div>
         </div>
     </main>

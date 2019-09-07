@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Room Categories</title>
+    <link th:replace="fragments :: bootstrap_head">
 </head>
 <body>
-    <table border="1">
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill text-center">
+        <div class="container">
+            <div class="jumbotron">
+        <table class="table table-striped text-center">
         <thead>
         <tr>
             <th>Name</th>
@@ -20,7 +27,7 @@
         <tr th:each="roomCategory: ${roomCategory}">
             <td th:text="${roomCategory.name}"></td>
             <td th:text="${roomCategory.description}"></td>
-            <td th:text="${roomCategory.pricePerNight}"></td>
+            <td th:text="${roomCategory.pricePerNight/100 + '.' + roomCategory.pricePerNight%100 + ' DKK'}" +></td>
             <td>
                 <!-- Button edit -->
                 <a th:href="'/admin/edit-room-category/' + ${roomCategory.id}">Edit</a>
@@ -30,5 +37,11 @@
         </tr>
         </tbody>
     </table>
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
 </body>
 </html>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -30,6 +31,8 @@ public class BookingController {
   @GetMapping("/book")
   public String chooseDates() {
     return "/booking/dates.html";
+
+
   }
 
   @PostMapping("/book")
@@ -187,7 +190,7 @@ public class BookingController {
           (checkIn.isBefore(booking.getCheckIn()) && checkOut.isAfter(booking.getCheckOut()))) {
         for (Map.Entry<Integer, Integer> rooms: booking.getBookedRooms().entrySet()) {
           int roomCat = rooms.getKey();
-          result.put(roomCat, result.get(roomCat) - rooms.getValue());
+          result.put(roomCat, Math.max(result.get(roomCat) - rooms.getValue(), 0));
         }
       }
     }
@@ -197,7 +200,7 @@ public class BookingController {
           (checkOut.isAfter(occupancy.getCheckIn()) && checkOut.isBefore(occupancy.getCheckOut())) ||
           (checkIn.isBefore(occupancy.getCheckIn()) && checkOut.isAfter(occupancy.getCheckOut()))) {
         int roomCat = occupancy.getRoom().getRoomCategory().getId();
-        result.put(roomCat, result.get(roomCat) - 1);
+        result.put(roomCat, Math.max(result.get(roomCat) - 1, 0));
       }
     }
 

@@ -47,6 +47,19 @@ public class RoomRepository {
     return result;
   }
 
+  public Room findRoomByNumber(String roomNumber){
+    Room result = null;
+
+    String query = "SELECT * FROM rooms where room_number = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, roomNumber);
+
+    if(rs.first()){
+      result = extractNextRoomFromRowSet(rs);
+    }
+
+    return result;
+  }
+
   private Room extractNextRoomFromRowSet(SqlRowSet rs) {
     Room result = new Room();
 
@@ -57,9 +70,9 @@ public class RoomRepository {
     return result;
   }
 
-  public void addRoom(Room room) {
+  public void addRoom(String roomCategoryId, String roomNumber) {
     jdbc.update("INSERT INTO rooms(room_cat_id, room_number) VALUES (?, ?);",
-        room.getRoomCategory(), room.getRoomNumber());
+        roomCategoryId, roomNumber);
   }
 
   public void deleteRoom(int id) {
@@ -67,7 +80,7 @@ public class RoomRepository {
   }
 
   public boolean canDelete(Room room) {
-    String query = ("SELECT COUNT(*) FROM occupancies WHERE room_id = ?;");
+    String query = ("SELECT COUNT(*) FROM occupancy WHERE room_id = ?;");
     SqlRowSet rs = jdbc.queryForRowSet(query, room.getId());
     rs.first();
     int noRooms = rs.getInt(1);
@@ -75,13 +88,21 @@ public class RoomRepository {
     return noRooms == 0;
   }
 
-  public void updateRoom(Room room) {
+  public boolean checkRoom(String roomNumber) {
+    String query = ("SELECT COUNT(*) FROM rooms WHERE room_number = ?;");
+    SqlRowSet rs = jdbc.queryForRowSet(query, roomNumber);
+    rs.first();
+    int noRooms = rs.getInt(1);
+    return noRooms == 0;
+  }
+
+  public void updateRoom(String roomCategoryId, String roomNumber, String roomId) {
     jdbc.update("UPDATE rooms SET " +
                     "room_cat_id = ?," +
                     "room_number = ? " +
-                    "WHERE id= ?",
-            room.getRoomCategory().getId(),
-            room.getRoomNumber(),
-            room.getId());
+                    "WHERE id = ?",
+            roomCategoryId,
+            roomNumber,
+            roomId);
   }
 }

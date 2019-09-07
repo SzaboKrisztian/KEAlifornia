@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <h1 class="display-4">Welcome to KEAlifornia</h1>
+
+            </div>
+        </div>
+    </main>
+    <div>
+        <span class="alert alert-danger" th:if="${error.equals('cannot-delete')}">This room is occupied at this moment so you can not delete or edit it.</span>
+        <span class="alert alert-danger" th:if="${error.equals('room-already-exists')}">This room number is already in use.</span>
+    </div>
+    <p>
+
+    </p>
+    <form action="/admin/edit/" th:object="${room}" method="post">
+        <input type="hidden" th:field="${room.id}" name="roomId">
+        <div class="form-row">
+            <div class="col">
+                <label for="number">Room number</label>
+                <input type="text" class="form-control" th:field="${room.roomNumber}"
+                       id="number" name="roomNumber" required>
+            </div>
+            <div class="col">
+                <label for="category">Category</label>
+                <select class="form-control" multiple size="5" id="category"
+                        name="roomCategoryId">
+                    <option th:each="category:${categories}"
+                            th:value="${category.getId()}"
+                            th:text="${category.getName()}"
+                            th:selected="${category.getId()} == ${room.getRoomCategory().getId()}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div th:if="${error.equals('no-error')}">
+        <button class="btn btn-primary" type="submit">Submit changes</button>
+        </div>
+        <div th:if="${error.equals('room-already-exists')}">
+            <button class="btn btn-primary" type="submit">Submit changes</button>
+        </div>
+    </form>
+    <div th:if="${error.equals('no-error')}">
+    <form action="/admin/rooms/delete" method="post">
+        <input type="hidden" name="roomId" th:value="${room.getId()}">
+        <button class="btn btn-danger" type="submit">Delete room</button>
+    </form>
+    </div>
+    <div th:if="${error.equals('room-already-exists')}">
+        <form action="/admin/rooms/delete" method="post">
+            <input type="hidden" name="roomId" th:value="${room.getId()}">
+            <button class="btn btn-danger" type="submit">Delete room</button>
+        </form>
+    </div>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+
+<style>
+    form {
+        margin: 0 auto;
+        width:400px;
+    }
+    button {
+        margin-top:0.5em;
+    }
+    span {
+        left:14%;
+    }
+</style>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <h1 class="display-4">Welcome to KEAlifornia</h1>
+
+            </div>
+        </div>
+    </main>
+    <div th:if="${error}">
+        <span class="alert alert-danger" th:if="${error.equals('room-already-exists')}">That room number is already in use.Try again.</span>
+    </div>
+    <p>
+
+    </p>
+    <form action="/admin/rooms/save" th:object="${room}" method="post">
+        <!--<input type="hidden" th:field="${room.id}" name="roomId">-->
+        <div class="form-row">
+            <div class="col">
+                <label for="number">Room number</label>
+                <input type="text" class="form-control" th:value="${room.roomNumber}"
+                       id="number" name="roomNumber" required>
+            </div>
+            <div class="col">
+                <label for="category">Category</label>
+                <select class="form-control" multiple size="5" id="category"
+                        name="roomCategoryId" required>
+                    <option th:each="category:${categories}"
+                            th:value="${category.getId()}"
+                            th:text="${category.getName()}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit changes</button>
+    </form>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+<style>
+    form {
+        margin: 0 auto;
+        width:400px;
+    }
+    button {
+        margin-top:0.5em;
+    }
+    span {
+        left:14%;
+    }
+</style>

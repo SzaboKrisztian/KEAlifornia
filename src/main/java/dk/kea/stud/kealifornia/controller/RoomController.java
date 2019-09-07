@@ -21,48 +21,75 @@ public class RoomController {
         return (""); //nu stiu cum o sa se cheme HTML-urile
     }
 
-    @GetMapping("manager/rooms/{id}")
-    public String findRoom(@PathVariable(name = "id") int id, Model model) {
-        model.addAttribute("room", roomRepo.findRoomById(id));
-        return ("");
+    @GetMapping("/admin/room")
+    public String room(){
+        return "room-form";
     }
 
-    @PostMapping("manager/rooms/delete")
-    public String deleteRoom(@PathVariable(name = "id") int id, Model model) {
-        Room room = roomRepo.findRoomById(id);
-        if (roomRepo.canDelete(room)) {
-            roomRepo.deleteRoom(id);
-            return "";
-        } else
-            return "";
+    @PostMapping("/admin/rooms")
+    public String findRoom(@RequestParam(name = "getRoomNumber") String roomNumber, Model model) {
+        String error;
+        if(roomRepo.checkRoom(roomNumber)) {
+            error = "room-not-found";
+            model.addAttribute("error", error);
+            return "room-form";
+        }
+        Room room = roomRepo.findRoomByNumber(roomNumber);
+        if(!roomRepo.canDelete(room)){
+            error="cannot-delete";
+        }
+        else error="no-error";
+        model.addAttribute("error", error);
+        model.addAttribute("room", room);
+        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
+        return "edit-room";
     }
 
-    @GetMapping("/manager/rooms/add")
+    @PostMapping("/admin/edit/")
+    public String editRoom(@ModelAttribute Room room,
+                           @RequestParam String roomNumber,
+                           @RequestParam String roomCategoryId, Model model){
+        String roomId = String.valueOf(room.getId());
+        Room currentRoom = roomRepo.findRoomById(Integer.parseInt(roomId));
+        Room roomAlreadyExists = roomRepo.findRoomByNumber(roomNumber);
+        if (roomAlreadyExists!= null && !currentRoom.getRoomNumber().equals(roomAlreadyExists.getRoomNumber())){
+            String error = "room-already-exists";
+            model.addAttribute("error", error);
+            model.addAttribute("room", currentRoom);
+            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
+            return "edit-room";
+        }
+        roomRepo.updateRoom(roomCategoryId,roomNumber,roomId);
+        return "redirect:/admin/room";
+    }
+
+    @PostMapping("/admin/rooms/delete")
+    public String deleteRoom(@RequestParam("roomId") String roomId) {
+        Room room = roomRepo.findRoomById(Integer.parseInt(roomId));
+            roomRepo.deleteRoom(Integer.parseInt(roomId));
+            return "redirect:/admin/room";
+    }
+
+    @GetMapping("/admin/rooms/add")
     public String addRoom(Model model) {
         model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
         model.addAttribute("room", new Room());
-        return "movies/movies-add";
+        return "room-add";
     }
 
-    @PostMapping("/manager/rooms/save")
-    public String saveRoom(@ModelAttribute Room room) {
-        roomRepo.addRoom(room);
-        return "redirect:/";
+    @PostMapping("/admin/rooms/save")
+    public String saveRoom(@RequestParam("roomNumber") String roomNumber,
+                           @RequestParam("roomCategoryId") String roomCategoryId,
+                           Model model) {
+        if(!roomRepo.checkRoom(roomNumber)){
+            String error = "room-already-exists";
+            model.addAttribute("error", error);
+            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
+            model.addAttribute("room", new Room());
+            return "room-add";
+        }
+        roomRepo.addRoom(roomCategoryId,roomNumber);
+        return "redirect:/admin/room";
     }
 
-    @GetMapping("/manager/rooms/edit/{id}")
-    public String editRoom(@PathVariable("id") int id, Model model) {
-        Room selectedRoom = roomRepo.findRoomById(id);
-        boolean hasOccupancy = !roomRepo.canDelete(selectedRoom);
-        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
-        model.addAttribute("currentRoom", selectedRoom);
-        model.addAttribute("hasOccupancy", hasOccupancy);
-        return "";
-    }
-
-    @PostMapping("/manager/rooms/edit")
-    public String updateMovie(@ModelAttribute Room room) {
-        roomRepo.updateRoom(room);
-        return "";
-    }
 }

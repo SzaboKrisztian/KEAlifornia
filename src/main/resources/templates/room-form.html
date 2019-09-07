@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <h1 class="display-4">Welcome to KEAlifornia</h1>
+
+            </div>
+        </div>
+        <div th:if="${error}">
+            <span class="alert alert-danger" th:if="${error.equals('room-not-found')}">Room not found.Try again.</span>
+        </div>
+      <form th:action="'/admin/rooms'" method="post" align="center">
+        <div class="container">
+            <label for="roomNumber">Room number</label>
+            <input type="text" class="form-control" id="roomNumber" name="getRoomNumber" placeholder="Room number"
+                   required>
+        </div>
+          <button class="btn btn-primary" type="submit">Search</button>
+      </form>
+        <p>
+            
+        </p>
+        <div>
+            <a class="btn btn btn-warning mb-3" th:href="'/admin/rooms/add'">Add new room</a>
+        </div>
+
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>
+
+<style>
+    form {
+        margin: 0 auto;
+        width:400px;
+    }
+    button {
+        margin-top:0.5em;
+    }
+    a {
+        position: sticky;
+        left: 45.5%;
+    }
+    span {
+        left:14%;
+    }
+</style>
+
