@@ -84,7 +84,6 @@ public class ReceptionController {
       occupancy.setCheckIn(LocalDate.parse(checkin, AppGlobals.DATE_FORMAT));
       occupancy.setCheckOut(LocalDate.parse(checkout, AppGlobals.DATE_FORMAT));
     } catch (DateTimeParseException e) {
-      System.out.println("error parsing");
       model.addAttribute("error", "format");
       return "/reception/newGuestDates.html";
     }

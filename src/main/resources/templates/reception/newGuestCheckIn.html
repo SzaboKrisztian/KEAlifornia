@@ -11,35 +11,33 @@
     <main class="flex-fill">
         <div class="container">
             <div class="jumbotron">
-                <form action="/rooms" method="post">
-                    <h1 class="display-4">Add room(s)</h1>
-                    <p>Selected period: <span
-                            th:text="${occupancy.getCheckIn()} + ' - ' + ${occupancy.getCheckOut()} + ': ' + ${occupancy.getNoNights()} + ' nights'"></span>
-                    </p>
-                    <p>Available rooms for period:
-                        <span th:each="category:${totalAvailable.keySet()}"
-                              th:text="' ' + ${totalAvailable.get(category)} + ' ' + ${roomCatRepo.findRoomCategoryById(category).getName()}">
-                        </span>
-                    </p>
-                    <form action="/occupy/confirm" method="post">
-                        <p>Vacant rooms at the moment</p>
-                        <div th:each="category:${data.availableRoomsForEachCategory.keySet()}">
-                            <p th:text="${roomCatRepo.findRoomCategoryById(category).getName()}"></p>
-                            <div class="form-check form-check-inline"
-                                 th:each="room:${data.availableRoomsForEachCategory.get(category)}">
-                                <input class="form-check-input" type="checkbox"
-                                       th:id="'Room_'+${room}"
-                                       th:value="${room}"
-                                       th:field="${data.selectedRooms}">
-                                <label class="form-check-label"
-                                       th:text="${roomRepo.findRoomById(room).getRoomNumber()}"
-                                       th:for="'Room_'+${room}">
-                                </label>
-                            </div>
+                <h1 class="display-4">Add room(s)</h1>
+                <p>Selected period: <span
+                        th:text="${occupancy.getCheckIn()} + ' - ' + ${occupancy.getCheckOut()} + ': ' + ${occupancy.getNoNights()} + ' nights'"></span>
+                </p>
+                <p>Available rooms for period:
+                    <span th:each="category:${totalAvailable.keySet()}"
+                          th:text="' ' + ${totalAvailable.get(category)} + ' ' + ${roomCatRepo.findRoomCategoryById(category).getName()}">
+                    </span>
+                </p>
+                <form action="/occupy/confirm" method="post">
+                    <p>Vacant rooms at the moment</p>
+                    <div th:each="category:${data.availableRoomsForEachCategory.keySet()}">
+                        <p th:text="${roomCatRepo.findRoomCategoryById(category).getName()}"></p>
+                        <div class="form-check form-check-inline"
+                             th:each="room:${data.availableRoomsForEachCategory.get(category)}">
+                            <input class="form-check-input" type="checkbox"
+                                   th:id="'Room_'+${room}"
+                                   th:value="${room}"
+                                   th:field="${data.selectedRooms}">
+                            <label class="form-check-label"
+                                   th:text="${roomRepo.findRoomById(room).getRoomNumber()}"
+                                   th:for="'Room_'+${room}">
+                            </label>
                         </div>
-                        <button type="submit">Occupy selected rooms</button>
-                        <input type="hidden" th:object="${occupancy}">
-                    </form>
+                    </div>
+                    <button type="submit">Occupy selected rooms</button>
+                    <input type="hidden" th:object="${occupancy}">
                 </form>
             </div>
         </div>
