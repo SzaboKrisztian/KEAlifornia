@@ -20,18 +20,24 @@
             </div>
         </div>
     </main>
-    <form action="/manager/rooms/save" th:object="${room}" method="post">
-        <input type="hidden" th:field="${room.id}" name="roomId">
+    <div th:if="${error}">
+        <span class="alert alert-danger" th:if="${error.equals('room-already-exists')}">That room number is already in use.Try again.</span>
+    </div>
+    <p>
+
+    </p>
+    <form action="/admin/rooms/save" th:object="${room}" method="post">
+        <!--<input type="hidden" th:field="${room.id}" name="roomId">-->
         <div class="form-row">
             <div class="col">
                 <label for="number">Room number</label>
-                <input type="text" class="form-control" th:field="${room.roomNumber}"
+                <input type="text" class="form-control" th:value="${room.roomNumber}"
                        id="number" name="roomNumber" required>
             </div>
             <div class="col">
                 <label for="category">Category</label>
                 <select class="form-control" multiple size="5" id="category"
-                        name="roomCategoryId">
+                        name="roomCategoryId" required>
                     <option th:each="category:${categories}"
                             th:value="${category.getId()}"
                             th:text="${category.getName()}">
@@ -45,3 +51,15 @@
 </div>
 <div th:replace="fragments :: bootstrap_body"></div>
 </body>
+<style>
+    form {
+        margin: 0 auto;
+        width:400px;
+    }
+    button {
+        margin-top:0.5em;
+    }
+    span {
+        left:14%;
+    }
+</style>
