@@ -75,7 +75,6 @@ public class OccupancyRepository {
   }
 
   public Occupancy addOccupancy(Occupancy occupancy) {
-    Guest guest = guestRepo.addGuest(occupancy.getGuest());
 
     PreparedStatementCreator psc = new PreparedStatementCreator() {
       @Override
@@ -83,7 +82,7 @@ public class OccupancyRepository {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO occupancies " +
             "(room_id, guest_id, check_in, check_out) VALUES (?, ?, ?, ?)", new String[]{"id"});
         ps.setInt(1, occupancy.getRoom().getId());
-        ps.setInt(2, guest.getId());
+        ps.setInt(2, occupancy.getGuest().getId());
         ps.setDate(3, Date.valueOf(occupancy.getCheckIn()));
         ps.setDate(4, Date.valueOf(occupancy.getCheckOut()));
         return ps;

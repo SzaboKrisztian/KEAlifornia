@@ -5,10 +5,7 @@ import dk.kea.stud.kealifornia.model.CheckInForm;
 import dk.kea.stud.kealifornia.model.Guest;
 import dk.kea.stud.kealifornia.model.Occupancy;
 import dk.kea.stud.kealifornia.model.Room;
-import dk.kea.stud.kealifornia.repository.BookingRepository;
-import dk.kea.stud.kealifornia.repository.OccupancyRepository;
-import dk.kea.stud.kealifornia.repository.RoomCategoryRepository;
-import dk.kea.stud.kealifornia.repository.RoomRepository;
+import dk.kea.stud.kealifornia.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +29,8 @@ public class ReceptionController {
   private RoomRepository roomRepo;
   @Autowired
   private RoomCategoryRepository roomCategoryRepo;
+  @Autowired
+  private GuestRepository guestRepo;
 
   @GetMapping("/findBooking")
   public String findBooking() {
@@ -66,6 +65,7 @@ public class ReceptionController {
       occupancy.setRoom(room);
       occupancyRepo.addOccupancy(occupancy);
     }
+    guestRepo.addGuest(occupancy.getGuest());
     bookingRepo.deleteBooking(bookingId);
 
     return "redirect:/findBooking";
@@ -151,10 +151,12 @@ public class ReceptionController {
   public String updateDatabase(@ModelAttribute("occupancy") Occupancy occupancy,
                                @ModelAttribute("data") CheckInForm data,
                                Model model) {
+    guestRepo.addGuest(occupancy.getGuest());
     for (Room room : occupancyRepo.convertStringSelectedRooms(data.getSelectedRooms())) {
       occupancy.setRoom(room);
       occupancyRepo.addOccupancy(occupancy);
     }
+
     model.addAttribute("roomRepo", roomRepo);
     model.addAttribute("occupancy", occupancy);
     model.addAttribute("data", data);
@@ -162,8 +164,6 @@ public class ReceptionController {
     return "/reception/noBookingConfirmed.html";
   }
 
-
-  //TODO
   private int calculateTotalCost(Occupancy occupancy, List<String> selectedRooms) {
     int total = 0;
     long noOfDays = ChronoUnit.DAYS.between(occupancy.getCheckIn(), occupancy.getCheckOut());
