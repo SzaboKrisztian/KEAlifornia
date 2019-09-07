@@ -80,11 +80,19 @@ public class RoomRepository {
   }
 
   public boolean canDelete(Room room) {
-    String query = ("SELECT COUNT(*) FROM occupancies WHERE room_id = ?;");
+    String query = ("SELECT COUNT(*) FROM occupancy WHERE room_id = ?;");
     SqlRowSet rs = jdbc.queryForRowSet(query, room.getId());
     rs.first();
     int noRooms = rs.getInt(1);
 
+    return noRooms == 0;
+  }
+
+  public boolean checkRoom(String roomNumber) {
+    String query = ("SELECT COUNT(*) FROM rooms WHERE room_number = ?;");
+    SqlRowSet rs = jdbc.queryForRowSet(query, roomNumber);
+    rs.first();
+    int noRooms = rs.getInt(1);
     return noRooms == 0;
   }
 

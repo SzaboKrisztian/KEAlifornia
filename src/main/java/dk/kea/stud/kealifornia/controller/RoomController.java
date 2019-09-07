@@ -21,49 +21,75 @@ public class RoomController {
         return (""); //nu stiu cum o sa se cheme HTML-urile
     }
 
-    @GetMapping("/room")
+    @GetMapping("/admin/room")
     public String room(){
         return "room-form";
     }
-    @PostMapping("/manager/room")
+
+    @PostMapping("/admin/rooms")
     public String findRoom(@RequestParam(name = "getRoomNumber") String roomNumber, Model model) {
+        String error;
+        if(roomRepo.checkRoom(roomNumber)) {
+            error = "room-not-found";
+            model.addAttribute("error", error);
+            return "room-form";
+        }
         Room room = roomRepo.findRoomByNumber(roomNumber);
+        if(!roomRepo.canDelete(room)){
+            error="cannot-delete";
+        }
+        else error="no-error";
+        model.addAttribute("error", error);
         model.addAttribute("room", room);
         model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
         return "edit-room";
     }
 
-    @PostMapping("/manager/edit/")
+    @PostMapping("/admin/edit/")
     public String editRoom(@ModelAttribute Room room,
                            @RequestParam String roomNumber,
-                           @RequestParam String roomCategoryId){
-
+                           @RequestParam String roomCategoryId, Model model){
         String roomId = String.valueOf(room.getId());
+        Room currentRoom = roomRepo.findRoomById(Integer.parseInt(roomId));
+        Room roomAlreadyExists = roomRepo.findRoomByNumber(roomNumber);
+        if (roomAlreadyExists!= null && !currentRoom.getRoomNumber().equals(roomAlreadyExists.getRoomNumber())){
+            String error = "room-already-exists";
+            model.addAttribute("error", error);
+            model.addAttribute("room", currentRoom);
+            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
+            return "edit-room";
+        }
         roomRepo.updateRoom(roomCategoryId,roomNumber,roomId);
-        return "redirect:/room";
+        return "redirect:/admin/room";
     }
 
-    @PostMapping("/manager/rooms/delete")
+    @PostMapping("/admin/rooms/delete")
     public String deleteRoom(@RequestParam("roomId") String roomId) {
-//        if (roomRepo.canDelete(room)) {
+        Room room = roomRepo.findRoomById(Integer.parseInt(roomId));
             roomRepo.deleteRoom(Integer.parseInt(roomId));
-            return "redirect:/room";
-//        } else
-//            return "";
+            return "redirect:/admin/room";
     }
 
-    @GetMapping("/manager/rooms/add")
+    @GetMapping("/admin/rooms/add")
     public String addRoom(Model model) {
         model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
         model.addAttribute("room", new Room());
         return "room-add";
     }
 
-    @PostMapping("/manager/rooms/save")
+    @PostMapping("/admin/rooms/save")
     public String saveRoom(@RequestParam("roomNumber") String roomNumber,
-                           @RequestParam("roomCategoryId") String roomCategoryId) {
+                           @RequestParam("roomCategoryId") String roomCategoryId,
+                           Model model) {
+        if(!roomRepo.checkRoom(roomNumber)){
+            String error = "room-already-exists";
+            model.addAttribute("error", error);
+            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
+            model.addAttribute("room", new Room());
+            return "room-add";
+        }
         roomRepo.addRoom(roomCategoryId,roomNumber);
-        return "redirect:/";
+        return "redirect:/admin/room";
     }
 
 }

@@ -19,7 +19,10 @@
 
             </div>
         </div>
-      <form th:action="'/manager/room'" method="post" align="center">
+        <div th:if="${error}">
+            <span class="alert alert-danger" th:if="${error.equals('room-not-found')}">Room not found.Try again.</span>
+        </div>
+      <form th:action="'/admin/rooms'" method="post" align="center">
         <div class="container">
             <label for="roomNumber">Room number</label>
             <input type="text" class="form-control" id="roomNumber" name="getRoomNumber" placeholder="Room number"
@@ -27,7 +30,13 @@
         </div>
           <button class="btn btn-primary" type="submit">Search</button>
       </form>
-        <a class="btn btn-primary mb-3" th:href="'/manager/rooms/add'">Add new room</a>
+        <p>
+            
+        </p>
+        <div>
+            <a class="btn btn btn-warning mb-3" th:href="'/admin/rooms/add'">Add new room</a>
+        </div>
+
     </main>
     <div th:replace="fragments :: footer"></div>
 </div>
@@ -40,9 +49,15 @@
         margin: 0 auto;
         width:400px;
     }
-
     button {
         margin-top:0.5em;
+    }
+    a {
+        position: sticky;
+        left: 45.5%;
+    }
+    span {
+        left:14%;
     }
 </style>
 
