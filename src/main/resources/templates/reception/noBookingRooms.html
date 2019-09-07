@@ -17,10 +17,11 @@
                 </p>
                 <p>Available rooms for period:
                     <span th:each="category:${totalAvailable.keySet()}"
-                          th:text="' ' + ${totalAvailable.get(category)} + ' ' + ${roomCatRepo.findRoomCategoryById(category).getName()}">
+                          th:text="' ' + ${totalAvailable.get(category)} + ' ' + ${roomCatRepo.findRoomCategoryById(category).getName()}
+                          + '(' + ${roomCatRepo.findRoomCategoryById(category).getPricePerNight() / 100} + '/night) '">
                     </span>
                 </p>
-                <form action="/occupy/confirm" method="post">
+                <form action="/noBooking/guestDetails" method="post">
                     <p>Vacant rooms at the moment</p>
                     <div th:each="category:${data.availableRoomsForEachCategory.keySet()}">
                         <p th:text="${roomCatRepo.findRoomCategoryById(category).getName()}"></p>

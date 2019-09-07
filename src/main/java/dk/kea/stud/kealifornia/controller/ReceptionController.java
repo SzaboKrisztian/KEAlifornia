@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,12 +71,12 @@ public class ReceptionController {
     return "redirect:/findBooking";
   }
 
-  @GetMapping("/occupy")
+  @GetMapping("/noBooking")
   public String chooseDates() {
-    return "/reception/newGuestDates.html";
+    return "/reception/noBookingDates.html";
   }
 
-  @PostMapping("/occupy")
+  @PostMapping("/noBooking/selectRooms")
   public String processDates(@RequestParam(name = "checkin") String checkin,
                              @RequestParam(name = "checkout") String checkout,
                              Model model) {
@@ -85,12 +86,12 @@ public class ReceptionController {
       occupancy.setCheckOut(LocalDate.parse(checkout, AppGlobals.DATE_FORMAT));
     } catch (DateTimeParseException e) {
       model.addAttribute("error", "format");
-      return "/reception/newGuestDates.html";
+      return "/reception/noBookingDates.html";
     }
 
     if (!occupancy.getCheckIn().isBefore(occupancy.getCheckOut())) {
       model.addAttribute("error", "dates");
-      return "/reception/newGuestDates.html";
+      return "/reception/noBookingDates.html";
     }
 
     CheckInForm data = new CheckInForm();
@@ -105,46 +106,71 @@ public class ReceptionController {
         occupancy.getCheckOut()));
     model.addAttribute("occupancy", occupancy);
 
-    return "/reception/newGuestCheckIn.html";
+    return "/reception/noBookingRooms.html";
   }
 
-  //this route has a problem
-  @PostMapping("/occupy/confirm")
+  @PostMapping("/noBooking/guestDetails")
   public String guestDetails(@ModelAttribute("occupancy") Occupancy occupancy,
-                             @ModelAttribute("data")CheckInForm data,
+                             @ModelAttribute("data") CheckInForm data,
                              Model model) {
     model.addAttribute("data", data);
     model.addAttribute("occupancy", occupancy);
     model.addAttribute("roomcatrepo", roomCategoryRepo);
     model.addAttribute("guest", new Guest());
     model.addAttribute("data", data);
-    return "/reception/newGuestInfo.html";
+    return "/reception/noBookingGuest.html";
   }
-//TODO
-  @PostMapping("/newGuestReview")
-  public String finalReview(@ModelAttribute("occupancy") Occupancy occupancy,
-                            @ModelAttribute("guest") Guest guest,
-                            @ModelAttribute("dob") String dob,
-                            @ModelAttribute("data") CheckInForm data,
-                            Model model) {
+
+  @PostMapping("/noBooking/checkIn")
+  public String summary(@ModelAttribute("occupancy") Occupancy occupancy,
+                        @ModelAttribute("guest") Guest guest,
+                        @ModelAttribute("dob") String dob,
+                        @ModelAttribute("data") CheckInForm data,
+                        Model model) {
+//    for (String id : data.getSelectedRooms()) {
+//      System.out.println(id);
+//    }
     model.addAttribute("total", calculateTotalCost(occupancy, data.getSelectedRooms()));
-    model.addAttribute("roomcatrepo", roomCategoryRepo);
+    model.addAttribute("roomRepo", roomRepo);
     try {
       guest.setDateOfBirth(LocalDate.parse(dob, AppGlobals.DATE_FORMAT));
       occupancy.setGuest(guest);
       model.addAttribute("occupancy", occupancy);
       model.addAttribute("data", data);
-      return "/reception/newGuestFinalReview.html";
+      return "/reception/noBookingSummary.html";
     } catch (DateTimeParseException e) {
       model.addAttribute("occupancy", occupancy);
+      model.addAttribute("data", data);
       model.addAttribute("guest", guest);
       model.addAttribute("error", "format");
-      return "/reception/newGuestInfo.html";
+      return "/reception/noBookingGuest.html";
     }
   }
-//TODO
+
+  @PostMapping("/noBooking/checkIn/confirmed")
+  public String updateDatabase(@ModelAttribute("occupancy") Occupancy occupancy,
+                               @ModelAttribute("data") CheckInForm data,
+                               Model model) {
+    for (Room room : occupancyRepo.convertStringSelectedRooms(data.getSelectedRooms())) {
+      occupancy.setRoom(room);
+      occupancyRepo.addOccupancy(occupancy);
+    }
+    model.addAttribute("roomRepo", roomRepo);
+    model.addAttribute("occupancy", occupancy);
+    model.addAttribute("data", data);
+    model.addAttribute("total", calculateTotalCost(occupancy, data.getSelectedRooms()));
+    return "/reception/noBookingConfirmed.html";
+  }
+
+
+  //TODO
   private int calculateTotalCost(Occupancy occupancy, List<String> selectedRooms) {
     int total = 0;
+    long noOfDays = ChronoUnit.DAYS.between(occupancy.getCheckIn(), occupancy.getCheckOut());
+    for (String roomId : selectedRooms) {
+
+      total += roomRepo.findRoomById(Integer.parseInt(roomId)).getRoomCategory().getPricePerNight() * noOfDays;
+    }
     return total;
   }
 }

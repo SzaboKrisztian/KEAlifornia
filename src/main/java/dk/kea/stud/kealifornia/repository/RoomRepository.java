@@ -47,6 +47,19 @@ public class RoomRepository {
     return result;
   }
 
+  public Room findRoomByStringId(String id) {
+    Room result = null;
+
+    String query = "SELECT * FROM rooms WHERE id = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, Integer.parseInt(id));
+
+    if (rs.first()) {
+      result = extractNextRoomFromRowSet(rs);
+    }
+
+    return result;
+  }
+
   private Room extractNextRoomFromRowSet(SqlRowSet rs) {
     Room result = new Room();
 
