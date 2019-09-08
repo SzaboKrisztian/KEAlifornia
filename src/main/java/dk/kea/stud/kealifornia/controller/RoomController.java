@@ -55,10 +55,8 @@ public class RoomController {
             return "redirect:/admin/room";
     }
 
-    @GetMapping("/manager/rooms/edit/{id}")
-    public String editRoom(@PathVariable("id") int id, Model model) {
-        Room selectedRoom = roomRepo.findRoomById(id);
-        boolean hasOccupancy = !roomRepo.canDelete(selectedRoom);
+    @GetMapping("/admin/rooms/add")
+    public String addRoom(Model model) {
         model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
         model.addAttribute("room", new Room());
         return "room-add";
