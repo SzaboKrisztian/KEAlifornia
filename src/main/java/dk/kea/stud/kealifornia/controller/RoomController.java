@@ -21,28 +21,20 @@ public class RoomController {
         return (""); //nu stiu cum o sa se cheme HTML-urile
     }
 
-    @GetMapping("/admin/room")
-    public String room(){
-        return "room-form";
+    @GetMapping("manager/rooms/{id}")
+    public String findRoom(@PathVariable(name = "id") int id, Model model) {
+        model.addAttribute("room", roomRepo.findRoomById(id));
+        return ("");
     }
 
-    @PostMapping("/admin/rooms")
-    public String findRoom(@RequestParam(name = "getRoomNumber") String roomNumber, Model model) {
-        String error;
-        if(roomRepo.checkRoom(roomNumber)) {
-            error = "room-not-found";
-            model.addAttribute("error", error);
-            return "room-form";
-        }
-        Room room = roomRepo.findRoomByNumber(roomNumber);
-        if(!roomRepo.canDelete(room)){
-            error="cannot-delete";
-        }
-        else error="no-error";
-        model.addAttribute("error", error);
-        model.addAttribute("room", room);
-        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
-        return "edit-room";
+    @PostMapping("manager/rooms/delete")
+    public String deleteRoom(@PathVariable(name = "id") int id, Model model) {
+        Room room = roomRepo.findRoomById(id);
+        if (roomRepo.canDelete(room)) {
+            roomRepo.deleteRoom(id);
+            return "";
+        } else
+            return "";
     }
 
     @PostMapping("/admin/edit/")
@@ -70,8 +62,10 @@ public class RoomController {
             return "redirect:/admin/room";
     }
 
-    @GetMapping("/admin/rooms/add")
-    public String addRoom(Model model) {
+    @GetMapping("/manager/rooms/edit/{id}")
+    public String editRoom(@PathVariable("id") int id, Model model) {
+        Room selectedRoom = roomRepo.findRoomById(id);
+        boolean hasOccupancy = !roomRepo.canDelete(selectedRoom);
         model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
         model.addAttribute("room", new Room());
         return "room-add";

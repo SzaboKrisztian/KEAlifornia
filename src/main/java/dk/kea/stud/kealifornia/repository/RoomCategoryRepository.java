@@ -56,9 +56,22 @@ public class RoomCategoryRepository {
     return result;
   }
 
+  public List<Integer> getAllRoomIntCategories() {
+    List<Integer> result = new ArrayList<>();
+
+    String query = "SELECT id FROM room_categories;";
+    SqlRowSet rs = jdbc.queryForRowSet(query);
+
+    while (rs.next()) {
+      result.add(rs.getInt("id"));
+    }
+
+    return result;
+  }
+
   public void addRoomCategory(RoomCategory roomCategory) {
     jdbc.update("INSERT INTO room_categories(name, description, price_per_night) VALUES " +
-        "(?, ?, ?);", roomCategory.getName(), roomCategory.getDescription(),
+            "(?, ?, ?);", roomCategory.getName(), roomCategory.getDescription(),
         roomCategory.getPricePerNight());
   }
 

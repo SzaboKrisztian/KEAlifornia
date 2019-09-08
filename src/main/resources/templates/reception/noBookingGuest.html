@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Hotel KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <h1 class="display-4">Enter your personal details</h1>
+                <div class="alert" th:if="${error}">Invalid date format. Try again</div>
+                <form action="/noBooking/checkIn" method="post" th:object="${guest}">
+                    <p>First name: </p>
+                    <input type="text" th:field="${guest.firstName}" required>
+                    <p>Last name: </p>
+                    <input type="text" th:field="${guest.lastName}" required>
+                    <p>Phone no: </p>
+                    <input type="text" th:field="${guest.phoneNo}" required>
+                    <p>E-mail address: </p>
+                    <input type="email" th:field="${guest.email}" required>
+                    <p>Document identification no: </p>
+                    <input type="text" th:field="${guest.documentIdNo}" required>
+                    <p>Date of birth: </p>
+                    <input type="date" name="dob" required>
+                    <input type="hidden" th:object="${occupancy}">
+                    <input type="hidden" th:object="${data}">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>
