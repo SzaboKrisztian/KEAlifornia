@@ -96,11 +96,13 @@ public class BookingRepository {
       @Override
       public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO bookings " +
-            "(guest_id, check_in, check_out, ref_no) VALUES (?, ?, ?, ?)", new String[]{"id"});
+            "(guest_id, check_in, check_out, ref_no) VALUES (?, MAKEDATE(?, ?), MAKEDATE(?, ?), ?)", new String[]{"id"});
         ps.setInt(1, booking.getGuest().getId());
-        ps.setDate(2, Date.valueOf(booking.getCheckIn()));
-        ps.setDate(3, Date.valueOf(booking.getCheckOut()));
-        ps.setString(4, booking.getRefNo());
+        ps.setInt(2, booking.getCheckIn().getYear());
+        ps.setInt(3, booking.getCheckIn().getDayOfYear());
+        ps.setInt(4, booking.getCheckOut().getYear());
+        ps.setInt(5, booking.getCheckOut().getDayOfYear());
+        ps.setString(6, booking.getRefNo());
         return ps;
       }
     };
@@ -153,6 +155,19 @@ public class BookingRepository {
 
     return !rs.first();
   }
-
-
+//
+////  private int getTotalBookedRoomsForCategory(int category) {
+////    int totalBookedRooms;
+////    String query = "SELECT"
+////  }
+//
+//  public Map<Integer, Integer> getAllBookedRooms() {
+//    HashMap<Integer, Integer> result = new HashMap<>();
+//
+//    for (Integer category : roomCategoryRepo.getAllRoomIntCategories()) {
+//      result.put(category, getBookedRoomsForCategory(category));
+//    }
+//
+//    return result;
+//  }
 }

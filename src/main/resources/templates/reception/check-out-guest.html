@@ -2,25 +2,26 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
-    <title>Checking in</title>
+    <title>KEAlifornia Check-out</title>
     <link th:replace="fragments :: bootstrap_head">
 </head>
 <body>
 <div class="d-flex flex-column sticky-footer-wrapper">
     <div th:replace="fragments :: navbar"></div>
-
     <main class="flex-fill text-center">
         <div class="container">
             <div class="jumbotron">
-                <form action="/findBooking" method="post">
-                    <div class="form-group">
-                        <label for="code">Booking's reference code: </label>
-                        <input type="text" class="form-control"
-                               id="code" name="bookingNo">
-                    </div>
-                    <button type="submit">Search booking</button>
+                <h2 class="display-4">Check-out rooms</h2>
+                <form method="post" action="/admin/check-out/guest/save">
+                <select class="form-control mb-4" th:name="selectedGuest">
+                    <option th:each="guest: ${guests}" th:value="${guest.id}">
+                        <span th:text="${guest.firstName} + ' ' + ${guest.lastName}"></span>
+                    </option>
+                </select>
+                    <button type="submit">Check-out</button>
                 </form>
             </div>
+
         </div>
     </main>
     <div th:replace="fragments :: footer"></div>

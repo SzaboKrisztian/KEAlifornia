@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Hotel KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <h1 class="display-4">Review the details of your booking</h1>
+                <table>
+                    <tr>
+                        <td>Period: </td>
+                        <td th:text="${occupancy.getCheckIn()} + ' - ' + ${occupancy.getCheckOut()}"></td>
+                    </tr>
+                    <tr th:each="roomId:${data.getSelectedRooms()}">
+                        <td th:text="'Room ' + ${roomRepo.findRoomByNumber(roomId).getRoomNumber()} + ' (' +
+                            ${roomRepo.findRoomByNumber(roomId).getRoomCategory().getPricePerNight() / 100} +
+                            ' DKK/night)'"></td>
+                    </tr>
+                    <tr>
+                        <td>Total:</td>
+                        <td th:text="${total} / 100"></td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td>Name: </td>
+                        <td th:text="${occupancy.getGuest().getLastName()} + ', ' + ${occupancy.getGuest().getFirstName()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Phone No:</td>
+                        <td th:text="${occupancy.getGuest().getPhoneNo()}"></td>
+                    </tr>
+                    <tr>
+                        <td>E-mail address:</td>
+                        <td th:text="${occupancy.getGuest().getEmail()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Document Id No:</td>
+                        <td th:text="${occupancy.getGuest().getDocumentIdNo()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Date of birth:</td>
+                        <td th:text="${occupancy.getGuest().getDateOfBirth()}"></td>
+                    </tr>
+                </table>
+                <form action="/noBooking/checkIn/confirmed" method="post">
+                    <input type="hidden" th:object="${occupancy}">
+                    <input type="hidden" th:object="${data}">
+                    <button class="btn btn-primary" type="submit">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>

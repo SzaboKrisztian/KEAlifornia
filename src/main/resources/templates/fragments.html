@@ -26,8 +26,14 @@
                 <a class="nav-item nav-link" th:href="@{/admin/check-in}" sec:authorize="isAuthenticated()">Check-in</a>
                 </li>
 
-                <li class="nav-item">
-                <a class="nav-item nav-link" th:href="@{/admin/check-out}" sec:authorize="isAuthenticated()">Check-out</a>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Check-out
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+                        <a class="dropdown-item" th:href="@{/admin/check-out/guest}">Guest</a>
+                        <a class="dropdown-item" th:href="@{/admin/check-out/rooms}">Rooms</a>
+                    </div>
                 </li>
 
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
@@ -37,7 +43,6 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" th:href="@{/admin/room-category}">Room Category</a>
                         <a class="dropdown-item" th:href="@{/admin/room}">Rooms</a>
-                        <a class="dropdown-item" th:href="@{/admin/occupancy}">Occupancy</a>
                     </div>
                 </li>
 

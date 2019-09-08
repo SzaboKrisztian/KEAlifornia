@@ -1,6 +1,7 @@
 package dk.kea.stud.kealifornia.model;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Occupancy {
   private int id;
@@ -47,5 +48,12 @@ public class Occupancy {
 
   public void setCheckOut(LocalDate checkOut) {
     this.checkOut = checkOut;
+  }
+
+  public int getNoNights() {
+    if (checkIn != null && checkOut != null) {
+      return (int) ChronoUnit.DAYS.between(checkIn, checkOut);
+    }
+    else return 0;
   }
 }

@@ -1,6 +1,7 @@
 package dk.kea.stud.kealifornia.controller;
 
 import dk.kea.stud.kealifornia.AppGlobals;
+import dk.kea.stud.kealifornia.Helper;
 import dk.kea.stud.kealifornia.model.*;
 import dk.kea.stud.kealifornia.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class BookingController {
         return "/booking/dates.html";
       }
 
-      model.addAttribute("available", countAvailableRoomsForPeriod(booking.getCheckIn(),
+      model.addAttribute("available", Helper.getInstance().countAvailableRoomsForPeriod(booking.getCheckIn(),
           booking.getCheckOut()));
       model.addAttribute("roomcatrepo", roomCategoryRepo);
       model.addAttribute("booking", booking);
@@ -67,7 +68,7 @@ public class BookingController {
                          @RequestParam(name = "norooms") String noRooms,
                          @RequestParam(name = "action") String action,
                          Model model) {
-    Map<Integer, Integer> available = countAvailableRoomsForPeriod(booking.getCheckIn(),
+    Map<Integer, Integer> available = Helper.getInstance().countAvailableRoomsForPeriod(booking.getCheckIn(),
         booking.getCheckOut());
     if (action.equals("add")) {
       int numberOfRooms;
@@ -190,7 +191,7 @@ public class BookingController {
           (checkIn.isBefore(booking.getCheckIn()) && checkOut.isAfter(booking.getCheckOut()))) {
         for (Map.Entry<Integer, Integer> rooms: booking.getBookedRooms().entrySet()) {
           int roomCat = rooms.getKey();
-          result.put(roomCat, Math.max(result.get(roomCat) - rooms.getValue(), 0));
+          result.put(roomCat, result.get(roomCat) - rooms.getValue());
         }
       }
     }
@@ -200,7 +201,7 @@ public class BookingController {
           (checkOut.isAfter(occupancy.getCheckIn()) && checkOut.isBefore(occupancy.getCheckOut())) ||
           (checkIn.isBefore(occupancy.getCheckIn()) && checkOut.isAfter(occupancy.getCheckOut()))) {
         int roomCat = occupancy.getRoom().getRoomCategory().getId();
-        result.put(roomCat, Math.max(result.get(roomCat) - 1, 0));
+        result.put(roomCat, result.get(roomCat) - 1);
       }
     }
 

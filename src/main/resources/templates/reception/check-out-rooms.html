@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to KEAlifornia</title>
+    <title>KEAlifornia Check-out</title>
     <link th:replace="fragments :: bootstrap_head">
 </head>
 <body>
@@ -11,9 +11,13 @@
     <main class="flex-fill text-center">
         <div class="container">
             <div class="jumbotron">
-                <h2 class="display-4">Welcome to KEAlifornia</h2>
-                <form action="/checkIn" th:object="${checkInForm}" method="post">
-
+                <h2 class="display-4">Check-out rooms</h2>
+                <form method="post" action="/admin/check-out/rooms/save">
+                <div th:each="occupancy: ${occupancies}" style="display: block">
+                    <input type="checkbox" th:name="occupancyChecked" th:value="${occupancy.id}"/>
+                    <span th:text="${'Room no. #' + occupancy.room.roomNumber}"></span>
+                </div>
+                    <button type="submit">Check-out</button>
                 </form>
             </div>
 

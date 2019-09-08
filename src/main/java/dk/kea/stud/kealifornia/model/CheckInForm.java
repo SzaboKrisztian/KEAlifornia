@@ -4,17 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CheckInForm {
-  private int bookingId;
   private List<String> selectedRooms;
   private Map<Integer, List<Integer>> availableRoomsForEachCategory;
-
-  public int getBookingId() {
-    return bookingId;
-  }
-
-  public void setBookingId(int bookingId) {
-    this.bookingId = bookingId;
-  }
 
   public List<String> getSelectedRooms() {
     return selectedRooms;

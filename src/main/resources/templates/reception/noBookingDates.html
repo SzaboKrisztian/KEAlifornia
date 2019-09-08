@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Hotel KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill">
+        <div class="container">
+            <div class="jumbotron">
+                <th:block th:unless="${error}">
+                    <h1 class="display-4">Pick the dates of your stay</h1>
+                    <p>Date format should be YYYY-MM-DD</p>
+                    <form action="/noBooking/selectRooms" method="post">
+                        <p>Check-in date:</p>
+                        <input type="date" id="checkin" name="checkin" required>
+                        <p>Check-out date:</p>
+                        <input type="date" id="checkout" name="checkout" required><br>
+                        <button class="btn btn-primary" type="submit">Select room(s)</button>
+                    </form>
+                </th:block>
+                <th:block th:if="${error}">
+                    <h1 class="display-4">Error!</h1>
+                    <p th:if="${error.equals('format')}">Wrong date format. Please try again.</p>
+                    <p th:if="${error.equals('dates')}">The check-in date must be at least one day prior to the check-out date. Please try again.</p>
+                </th:block>
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>
