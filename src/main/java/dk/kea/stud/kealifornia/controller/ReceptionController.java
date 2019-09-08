@@ -1,6 +1,7 @@
 package dk.kea.stud.kealifornia.controller;
 
 import dk.kea.stud.kealifornia.AppGlobals;
+import dk.kea.stud.kealifornia.Helper;
 import dk.kea.stud.kealifornia.model.CheckInForm;
 import dk.kea.stud.kealifornia.model.Guest;
 import dk.kea.stud.kealifornia.model.Occupancy;
@@ -31,6 +32,8 @@ public class ReceptionController {
   private RoomCategoryRepository roomCategoryRepo;
   @Autowired
   private GuestRepository guestRepo;
+  @Autowired
+  private Helper helper;
 
   @GetMapping("/admin/findBooking")
   public String findBooking() {
@@ -102,8 +105,7 @@ public class ReceptionController {
     model.addAttribute("data", data);
     model.addAttribute("roomRepo", roomRepo);
     model.addAttribute("roomCatRepo", roomCategoryRepo);
-    model.addAttribute("totalAvailable", occupancyRepo.countAvailableRoomsForPeriod(occupancy.getCheckIn(),
-        occupancy.getCheckOut()));
+    model.addAttribute("totalAvailable", helper.countAvailableRoomsForPeriod(occupancy.getCheckIn(),occupancy.getCheckOut()));
     model.addAttribute("occupancy", occupancy);
 
     return "/reception/noBookingRooms.html";
