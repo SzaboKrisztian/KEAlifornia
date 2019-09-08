@@ -15,7 +15,7 @@
                 <table>
                     <tr>
                         <td>Period: </td>
-                        <td th:text="${booking.getCheckIn()} + ' - ' + ${booking.getCheckOut()}"></td>
+                        <td th:text="${booking.getCheckIn()} + ' - ' + ${booking.getCheckOut()} + ': ' + ${booking.getNoNights()} + ' nights'"></td>
                     </tr>
                     <tr th:each="entry:${booking.getBookedRooms()}">
                         <td th:text="${entry.getValue()} + 'x ' +
@@ -23,11 +23,15 @@
                             ${roomcatrepo.findRoomCategoryById(entry.getKey()).getPricePerNight() / 100} +
                             ' DKK)'"></td>
                         <td th:text="${entry.getValue()} * ${roomcatrepo.
-                            findRoomCategoryById(entry.getKey()).getPricePerNight()} / 100"></td>
+                            findRoomCategoryById(entry.getKey()).getPricePerNight()} / 100 + ' DKK'"></td>
                     </tr>
                     <tr>
-                        <td>Total:</td>
-                        <td th:text="${total} / 100"></td>
+                        <td>Total per night:</td>
+                        <td th:text="${total} / 100 + ' DKK'"></td>
+                    </tr>
+                    <tr>
+                        <td>Grand total:</td>
+                        <td th:text="(${total} * ${booking.getNoNights()}) / 100 + ' DKK'"></td>
                     </tr>
                 </table>
                 <form action="/confirm" method="post">
