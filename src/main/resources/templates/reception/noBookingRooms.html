@@ -21,7 +21,7 @@
                           + '(' + ${roomCatRepo.findRoomCategoryById(category).getPricePerNight() / 100} + '/night) '">
                     </span>
                 </p>
-                <form action="/noBooking/guestDetails" method="post">
+                <form action="/admin/noBooking/guestDetails" method="post">
                     <p>Vacant rooms at the moment</p>
                     <div th:each="category:${data.availableRoomsForEachCategory.keySet()}">
                         <p th:text="${roomCatRepo.findRoomCategoryById(category).getName()}"></p>
