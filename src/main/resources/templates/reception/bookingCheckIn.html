@@ -18,7 +18,7 @@
                 th:text="${booking.getBookedRooms().get(category)} + ' ' +
                         ${roomCatRepo.findRoomCategoryById(category).getName()} + ' room(s).'" >
                 </p>
-                <form th:action="'/checkIn/'+${booking.getId()}"
+                <form th:action="'/admin/checkIn/'+${booking.getId()}"
                       th:object="${data}" method="post">
                     <div th:each="category:${data.availableRoomsForEachCategory.keySet()}">
                         <p th:text="${roomCatRepo.findRoomCategoryById(category).getName()}"></p>

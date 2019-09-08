@@ -18,8 +18,8 @@
                         <td th:text="${occupancy.getCheckIn()} + ' - ' + ${occupancy.getCheckOut()}"></td>
                     </tr>
                     <tr th:each="roomId:${data.getSelectedRooms()}">
-                        <td th:text="'Room ' + ${roomRepo.findRoomByStringId(roomId).getRoomNumber()} + ' (' +
-                            ${roomRepo.findRoomByStringId(roomId).getRoomCategory().getPricePerNight() / 100} +
+                        <td th:text="'Room ' + ${roomRepo.findRoomById(T(java.lang.Integer).parseInt(roomId)).getRoomNumber()} + ' (' +
+                            ${roomRepo.findRoomById(T(java.lang.Integer).parseInt(roomId)).getRoomCategory().getPricePerNight() / 100} +
                             ' DKK/night)'"></td>
                     </tr>
                     <tr>
@@ -49,7 +49,7 @@
                         <td th:text="${occupancy.getGuest().getDateOfBirth()}"></td>
                     </tr>
                 </table>
-                <form action="/noBooking/checkIn/confirmed" method="post">
+                <form action="/admin/noBooking/checkIn/confirmed" method="post">
                     <input type="hidden" th:object="${occupancy}">
                     <input type="hidden" th:object="${data}">
                     <button class="btn btn-primary" type="submit">Confirm</button>

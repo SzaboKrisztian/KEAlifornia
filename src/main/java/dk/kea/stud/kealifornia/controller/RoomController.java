@@ -15,16 +15,9 @@ public class RoomController {
     @Autowired
     private RoomCategoryRepository roomCategoryRepo;
 
-    @GetMapping("manager/rooms")
-    public String findAllRooms(Model model) {
-        model.addAttribute("rooms", roomRepo.findAllRooms());
-        return (""); //nu stiu cum o sa se cheme HTML-urile
-    }
-
-    @GetMapping("manager/rooms/{id}")
-    public String findRoom(@PathVariable(name = "id") int id, Model model) {
-        model.addAttribute("room", roomRepo.findRoomById(id));
-        return ("");
+    @GetMapping("/admin/room")
+    public String room(){
+        return "room-form";
     }
 
     @PostMapping("manager/rooms/delete")
