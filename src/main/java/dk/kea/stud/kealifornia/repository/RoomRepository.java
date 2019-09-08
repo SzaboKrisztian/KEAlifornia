@@ -1,18 +1,13 @@
 package dk.kea.stud.kealifornia.repository;
 
-import dk.kea.stud.kealifornia.model.Booking;
-import dk.kea.stud.kealifornia.model.Occupancy;
 import dk.kea.stud.kealifornia.model.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class RoomRepository {
@@ -80,7 +75,7 @@ public class RoomRepository {
   }
 
   public boolean canDelete(Room room) {
-    String query = ("SELECT COUNT(*) FROM occupancy WHERE room_id = ?;");
+    String query = ("SELECT COUNT(*) FROM occupancies WHERE room_id = ?;");
     SqlRowSet rs = jdbc.queryForRowSet(query, room.getId());
     rs.first();
     int noRooms = rs.getInt(1);
