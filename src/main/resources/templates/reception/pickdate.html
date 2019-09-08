@@ -11,19 +11,34 @@
     <main class="flex-fill text-center">
         <div class="container">
             <div class="jumbotron">
-                <table>
-                    <tr>
-                        <td>Monday</td>
-                        <td>Tuesday</td>
-                        <td>Wednesday</td>
-                        <td>Thursday</td>
-                        <td>Friday</td>
-                        <td>Saturday</td>
-                        <td>Sunday</td>
-                    </tr>
+                <h1 class="display-4">Rooms Available</h1>
+                <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>Monday</td>
+                            <td>Tuesday</td>
+                            <td>Wednesday</td>
+                            <td>Thursday</td>
+                            <td>Friday</td>
+                            <td>Saturday</td>
+                            <td>Sunday</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each="entry, iter: ${calendar}">
+                            <th:block th:if="${iter.index} % 7 == 0">
+                                <tr>
+                            </th:block>
+                            <td th:utext="'<div style=&quot;background-color: #cccccc; color:#ffffff&quot;>' + ${entry.getKey().getDayOfMonth()} + '</div><br>' + ${entry.getValue()}"></td>
+                            <th:block th:if="${iter.index} % 7 == 6">
+                                </tr>
+                            </th:block>
+                        </th:block>
+                    </tbody>
                 </table>
-                <h1 class="display-4">Pick a month</h1>
-                <form action="/test" method="post">
+                </div>
+                <form action="/admin/occupancy" method="post">
                     <select class="form-control" name="month">
                         <option th:each="pair:${months}" th:value="${pair.get(0)} + ', ' + ${pair.get(1)}" th:text="${pair.get(0)} + ', ' + ${monthNames[pair.get(1) - 1]}"></option>
                     </select>

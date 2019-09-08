@@ -30,7 +30,7 @@ public class OccupancyController {
   @Autowired
   Helper helper;
 
-  @GetMapping("/test")
+  @GetMapping("/admin/occupancy")
   public String showDefault(Model model) {
     model.addAttribute("padding", LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), 1).getDayOfWeek().getValue() % 7);
     model.addAttribute("calendar", getAvailabilityCalendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), 0));
@@ -40,7 +40,7 @@ public class OccupancyController {
     return "reception/pickdate.html";
   }
 
-  @PostMapping("/test")
+  @PostMapping("/admin/occupancy")
   public String showParticular(Model model,
                                @RequestParam("month") String monthData,
                                @RequestParam("category") int category) {
@@ -72,6 +72,12 @@ public class OccupancyController {
     int monthLength = LocalDate.of(year, month, 1).lengthOfMonth();
     for (int i = 1; i <= monthLength; i++) {
       result.add(LocalDate.of(year, month, i));
+    }
+    while (result.get(0).getDayOfWeek().getValue() != 1) {
+      result.add(0, result.get(0).minusDays(1));
+    }
+    while (result.get(result.size() - 1).getDayOfWeek().getValue() != 7) {
+      result.add(result.get(result.size() - 1).plusDays(1));
     }
     return result;
   }

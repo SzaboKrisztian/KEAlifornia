@@ -22,7 +22,9 @@
                 <li class="nav-item">
                 <a class="nav-item nav-link" th:href="@{/book}">Book a Room</a>
                 </li>
-                
+                <li class="nav-item">
+                    <a class="nav-item nav-link" th:href="@{/admin/occupancy}" sec:authorize="isAuthenticated()">Occupancy</a>
+                </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Check-in
