@@ -7,28 +7,22 @@ import dk.kea.stud.kealifornia.repository.BookingRepository;
 import dk.kea.stud.kealifornia.repository.OccupancyRepository;
 import dk.kea.stud.kealifornia.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
+@Scope(value = "singleton")
 public class Helper {
-  private static Helper instance;
   @Autowired
   private BookingRepository bookingRepo;
   @Autowired
   private OccupancyRepository occupancyRepo;
   @Autowired
   private RoomRepository roomRepo;
-
-  private Helper() {}
-
-  public static Helper getInstance() {
-    if (instance == null) {
-      instance = new Helper();
-    }
-    return instance;
-  }
 
   public Map<Integer, Integer> countAvailableRoomsForPeriod(LocalDate checkIn,
                                                              LocalDate checkOut) {

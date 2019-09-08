@@ -28,6 +28,8 @@ public class BookingController {
   RoomRepository roomRepo;
   @Autowired
   OccupancyRepository occupancyRepo;
+  @Autowired
+  Helper helper;
 
   @GetMapping("/book")
   public String chooseDates() {
@@ -55,7 +57,7 @@ public class BookingController {
         return "/booking/dates.html";
       }
 
-      model.addAttribute("available", Helper.getInstance().countAvailableRoomsForPeriod(booking.getCheckIn(),
+      model.addAttribute("available", helper.countAvailableRoomsForPeriod(booking.getCheckIn(),
           booking.getCheckOut()));
       model.addAttribute("roomcatrepo", roomCategoryRepo);
       model.addAttribute("booking", booking);
@@ -68,7 +70,7 @@ public class BookingController {
                          @RequestParam(name = "norooms") String noRooms,
                          @RequestParam(name = "action") String action,
                          Model model) {
-    Map<Integer, Integer> available = Helper.getInstance().countAvailableRoomsForPeriod(booking.getCheckIn(),
+    Map<Integer, Integer> available = helper.countAvailableRoomsForPeriod(booking.getCheckIn(),
         booking.getCheckOut());
     if (action.equals("add")) {
       int numberOfRooms;

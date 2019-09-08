@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Hotel KEAlifornia</title>
+    <link th:replace="fragments :: bootstrap_head">
+</head>
+<body>
+<div class="d-flex flex-column sticky-footer-wrapper">
+    <div th:replace="fragments :: navbar"></div>
+    <main class="flex-fill text-center">
+        <div class="container">
+            <div class="jumbotron">
+                <table>
+                    <tr>
+                        <td>Monday</td>
+                        <td>Tuesday</td>
+                        <td>Wednesday</td>
+                        <td>Thursday</td>
+                        <td>Friday</td>
+                        <td>Saturday</td>
+                        <td>Sunday</td>
+                    </tr>
+                </table>
+                <h1 class="display-4">Pick a month</h1>
+                <form action="/test" method="post">
+                    <select class="form-control" name="month">
+                        <option th:each="pair:${months}" th:value="${pair.get(0)} + ', ' + ${pair.get(1)}" th:text="${pair.get(0)} + ', ' + ${monthNames[pair.get(1) - 1]}"></option>
+                    </select>
+                    <select class="form-control" name="category">
+                        <option value="0">All categories</option>
+                        <option th:each="category:${roomCategories}" th:value="${category.getId()}" th:text="${category.getName()} + 's'"></option>
+                    </select>
+                    <button class="btn btn-primary" type="submit">Continue</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <div th:replace="fragments :: footer"></div>
+</div>
+<div th:replace="fragments :: bootstrap_body"></div>
+</body>
+</html>
