@@ -18,8 +18,8 @@
                         <td th:text="${occupancy.getCheckIn()} + ' - ' + ${occupancy.getCheckOut()}"></td>
                     </tr>
                     <tr th:each="roomId:${data.getSelectedRooms()}">
-                        <td th:text="${roomRepo.findRoomByNumber(roomId).getRoomNumber()} + ' (' +
-                            ${roomRepo.findRoomByNumber(roomId).getRoomCategory().getPricePerNight() / 100} +
+                        <td th:text="${roomRepo.findRoomById(T(java.lang.Integer).parseInt(roomId)).getRoomNumber()} + ' (' +
+                            ${roomRepo.findRoomById(T(java.lang.Integer).parseInt(roomId)).getRoomCategory().getPricePerNight() / 100} +
                             ' DKK)'"></td>
                     </tr>
                     <tr>

@@ -32,12 +32,12 @@ public class ReceptionController {
   @Autowired
   private GuestRepository guestRepo;
 
-  @GetMapping("/findBooking")
+  @GetMapping("/admin/findBooking")
   public String findBooking() {
     return "reception/findBooking.html";
   }
 
-  @PostMapping("/findBooking")
+  @PostMapping("/admin/findBooking")
   public String checkIn(@RequestParam String bookingRefNo, Model model) {
     CheckInForm data = new CheckInForm();
 
@@ -53,7 +53,7 @@ public class ReceptionController {
   }
 
 
-  @PostMapping("/checkIn/{bookingId}")
+  @PostMapping("/admin/checkIn/{bookingId}")
   public String updateDatabase(@ModelAttribute CheckInForm data,
                                @PathVariable(name = "bookingId") int bookingId) {
     Occupancy occupancy = new Occupancy();
@@ -71,12 +71,12 @@ public class ReceptionController {
     return "redirect:/findBooking";
   }
 
-  @GetMapping("/noBooking")
+  @GetMapping("/admin/noBooking")
   public String chooseDates() {
     return "/reception/noBookingDates.html";
   }
 
-  @PostMapping("/noBooking/selectRooms")
+  @PostMapping("/admin/noBooking/selectRooms")
   public String processDates(@RequestParam(name = "checkin") String checkin,
                              @RequestParam(name = "checkout") String checkout,
                              Model model) {
@@ -109,7 +109,7 @@ public class ReceptionController {
     return "/reception/noBookingRooms.html";
   }
 
-  @PostMapping("/noBooking/guestDetails")
+  @PostMapping("/admin/noBooking/guestDetails")
   public String guestDetails(@ModelAttribute("occupancy") Occupancy occupancy,
                              @ModelAttribute("data") CheckInForm data,
                              Model model) {
@@ -121,7 +121,7 @@ public class ReceptionController {
     return "/reception/noBookingGuest.html";
   }
 
-  @PostMapping("/noBooking/checkIn")
+  @PostMapping("/admin/noBooking/checkIn")
   public String summary(@ModelAttribute("occupancy") Occupancy occupancy,
                         @ModelAttribute("guest") Guest guest,
                         @ModelAttribute("dob") String dob,
@@ -147,7 +147,7 @@ public class ReceptionController {
     }
   }
 
-  @PostMapping("/noBooking/checkIn/confirmed")
+  @PostMapping("/admin/noBooking/checkIn/confirmed")
   public String updateDatabase(@ModelAttribute("occupancy") Occupancy occupancy,
                                @ModelAttribute("data") CheckInForm data,
                                Model model) {
@@ -162,6 +162,44 @@ public class ReceptionController {
     model.addAttribute("data", data);
     model.addAttribute("total", calculateTotalCost(occupancy, data.getSelectedRooms()));
     return "/reception/noBookingConfirmed.html";
+  }
+
+  @GetMapping("/admin/check-out/rooms")
+  public String showAllOccupancy(Model model) throws Exception {
+    List<Occupancy> occupancyList = occupancyRepo.getAllOccupancies();
+    model.addAttribute("occupancies", occupancyList);
+    return "/reception/check-out-rooms";
+  }
+
+  //TODO delete guests
+  @PostMapping("/admin/check-out/rooms/save")
+  public String checkOutRooms(@RequestParam("occupancyChecked") List<String> selectedRooms){
+    if(selectedRooms != null){
+      for(String occupancy : selectedRooms){
+        int occupancyId = Integer.parseInt(occupancy);
+        occupancyRepo.deleteOccupancy(occupancyId);
+      }
+    }
+    return "redirect:/admin/check-out/rooms";
+  }
+
+  @GetMapping("/admin/check-out/guest")
+  public String showAllGuests(Model model) throws Exception {
+    List<Guest> guestList = guestRepo.getAllGuest();
+    model.addAttribute("guests", guestList);
+    return "/reception/check-out-guest";
+  }
+
+  @PostMapping("/admin/check-out/guest/save")
+  public String checkOutGuest(@RequestParam("selectedGuest") int guest){
+    List<Occupancy> occupancyList = occupancyRepo.getAllOccupancies();
+    for(int i=0; i<occupancyList.size(); i++)
+    {
+      if(occupancyList.get(i).getGuest().getId() == guest)
+        occupancyRepo.deleteOccupancy(i);
+    }
+    guestRepo.deleteGuest(guest);
+    return "redirect:/admin/check-out/guest";
   }
 
   private int calculateTotalCost(Occupancy occupancy, List<String> selectedRooms) {

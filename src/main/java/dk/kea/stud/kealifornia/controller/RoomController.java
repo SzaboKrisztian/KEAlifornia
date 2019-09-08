@@ -15,34 +15,19 @@ public class RoomController {
     @Autowired
     private RoomCategoryRepository roomCategoryRepo;
 
-    @GetMapping("manager/rooms")
-    public String findAllRooms(Model model) {
-        model.addAttribute("rooms", roomRepo.findAllRooms());
-        return (""); //nu stiu cum o sa se cheme HTML-urile
-    }
-
     @GetMapping("/admin/room")
     public String room(){
         return "room-form";
     }
 
-    @PostMapping("/admin/rooms")
-    public String findRoom(@RequestParam(name = "getRoomNumber") String roomNumber, Model model) {
-        String error;
-        if(roomRepo.checkRoom(roomNumber)) {
-            error = "room-not-found";
-            model.addAttribute("error", error);
-            return "room-form";
-        }
-        Room room = roomRepo.findRoomByNumber(roomNumber);
-        if(!roomRepo.canDelete(room)){
-            error="cannot-delete";
-        }
-        else error="no-error";
-        model.addAttribute("error", error);
-        model.addAttribute("room", room);
-        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
-        return "edit-room";
+    @PostMapping("manager/rooms/delete")
+    public String deleteRoom(@PathVariable(name = "id") int id, Model model) {
+        Room room = roomRepo.findRoomById(id);
+        if (roomRepo.canDelete(room)) {
+            roomRepo.deleteRoom(id);
+            return "";
+        } else
+            return "";
     }
 
     @PostMapping("/admin/edit/")
