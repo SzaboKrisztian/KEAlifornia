@@ -1,6 +1,7 @@
 package dk.kea.stud.kealifornia.repository;
 
 import dk.kea.stud.kealifornia.model.Guest;
+import dk.kea.stud.kealifornia.model.RoomCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -13,12 +14,27 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class GuestRepository {
 
   @Autowired
   private JdbcTemplate jdbc;
+
+  public List<Guest> getAllGuest() {
+    List<Guest> result = new ArrayList<>();
+
+    String query = "SELECT * FROM guests;";
+    SqlRowSet rs = jdbc.queryForRowSet(query);
+
+    while (rs.next()) {
+      result.add(extractNextGuestFromRowSet(rs));
+    }
+
+    return result;
+  }
 
   public Guest findGuestById(int id) {
     Guest result = null;
