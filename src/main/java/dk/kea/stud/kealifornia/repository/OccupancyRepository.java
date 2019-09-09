@@ -1,7 +1,5 @@
 package dk.kea.stud.kealifornia.repository;
 
-import dk.kea.stud.kealifornia.model.Booking;
-import dk.kea.stud.kealifornia.model.Guest;
 import dk.kea.stud.kealifornia.model.Occupancy;
 import dk.kea.stud.kealifornia.model.Room;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +14,9 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class OccupancyRepository {

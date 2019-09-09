@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Edit Room Category</title>
@@ -11,25 +11,24 @@
     <main class="flex-fill text-center">
         <div class="container">
             <div class="jumbotron">
-<form method="post" action="/admin/edit-room-category/save" th:object="${editedRoomCategory}">
+                <form method="post" action="/admin/edit-room-category/save" th:object="${editedRoomCategory}">
 
-    <!--    <input type="hidden" id="id" th:field="${newRoomCategory.id}" name="id">-->
-    <input type="hidden" th:field="${editedRoomCategory.id}">
+                    <input type="hidden" th:field="${editedRoomCategory.id}">
 
-    <label>Name</label>
-    <input type="text" th:field="${editedRoomCategory.name}" required>
+                    <label>Name</label>
+                    <input type="text" th:field="${editedRoomCategory.name}" required>
 
-    <label>Description</label>
-    <input type="text" th:field="${editedRoomCategory.description}" required>
+                    <label>Description</label>
+                    <input type="text" th:field="${editedRoomCategory.description}" required>
 
-    <label>Price per night</label>
-    <input type="text" th:field="${editedRoomCategory.pricePerNight}" required>
+                    <label>Price per night</label>
+                    <input type="text" th:field="${editedRoomCategory.pricePerNight}" required>
 
 
-    <button type="submit">
-        Save
-    </button>
-</form>
+                    <button type="submit">
+                        Save
+                    </button>
+                </form>
             </div>
         </div>
     </main>

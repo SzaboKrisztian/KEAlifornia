@@ -11,7 +11,7 @@
     <main class="flex-fill text-center">
         <div class="container">
             <div class="jumbotron">
-            <form id="login-form" th:action="@{/login}" method="post">
+            <form id="login-form" action="/login" method="post">
                 <div th:if="${param.logout}">
                     <h5>Logged out.</h5>
                 </div>

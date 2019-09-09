@@ -22,7 +22,7 @@
         <div th:if="${error}">
             <span class="alert alert-danger" th:if="${error.equals('room-not-found')}">Room not found.Try again.</span>
         </div>
-      <form th:action="'/admin/rooms'" method="post" align="center">
+      <form action="/admin/rooms" method="post" align="center">
         <div class="container">
             <label for="roomNumber">Room number</label>
             <input type="text" class="form-control" id="roomNumber" name="getRoomNumber" placeholder="Room number"

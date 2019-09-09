@@ -37,7 +37,7 @@ public class OccupancyController {
     model.addAttribute("months", generateMonths());
     model.addAttribute("monthNames", new DateFormatSymbols().getMonths());
     model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategories());
-    return "reception/pickdate.html";
+    return "/reception/pickdate.html";
   }
 
   @PostMapping("/admin/occupancy")
@@ -52,7 +52,7 @@ public class OccupancyController {
     model.addAttribute("months", generateMonths());
     model.addAttribute("monthNames", new DateFormatSymbols().getMonths());
     model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategories());
-    return "reception/pickdate.html";
+    return "/reception/pickdate.html";
   }
 
   private List<List<Integer>> generateMonths() {

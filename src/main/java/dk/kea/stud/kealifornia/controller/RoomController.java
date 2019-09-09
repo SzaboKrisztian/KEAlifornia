@@ -20,15 +20,16 @@ public class RoomController {
         return "room-form";
     }
 
-    @PostMapping("manager/rooms/delete")
-    public String deleteRoom(@PathVariable(name = "id") int id, Model model) {
-        Room room = roomRepo.findRoomById(id);
-        if (roomRepo.canDelete(room)) {
-            roomRepo.deleteRoom(id);
-            return "";
-        } else
-            return "";
-    }
+//    //TODO what's this one?
+//    @PostMapping("/admin/rooms/delete")
+//    public String deleteRoom(@PathVariable(name = "id") int id, Model model) {
+//        Room room = roomRepo.findRoomById(id);
+//        if (roomRepo.canDelete(room)) {
+//            roomRepo.deleteRoom(id);
+//            return "";
+//        } else
+//            return "";
+//    }
 
     @PostMapping("/admin/edit/")
     public String editRoom(@ModelAttribute Room room,

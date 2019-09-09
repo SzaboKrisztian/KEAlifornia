@@ -12,31 +12,32 @@
     <main class="flex-fill text-center">
         <div class="container">
             <div class="jumbotron">
-        <table class="table table-striped text-center">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price per night</th>
-            <th>
-                <a th:href="'/admin/add-room-category/'">Add room category</a>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="roomCategory: ${roomCategory}">
-            <td th:text="${roomCategory.name}"></td>
-            <td th:text="${roomCategory.description}"></td>
-            <td th:text="${roomCategory.pricePerNight/100 + '.' + roomCategory.pricePerNight%100 + ' DKK'}" +></td>
-            <td>
-                <!-- Button edit -->
-                <a th:href="'/admin/edit-room-category/' + ${roomCategory.id}">Edit</a>
-                <!-- Button delete -->
-                <a th:href="'/admin/delete-room-category/' + ${roomCategory.id}">Delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                <table class="table table-striped text-center">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price per night</th>
+                        <th>
+                            <a th:href="'/admin/add-room-category/'">Add room category</a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="roomCategory: ${roomCategory}">
+                        <td th:text="${roomCategory.name}"></td>
+                        <td th:text="${roomCategory.description}"></td>
+                        <td th:text="${roomCategory.pricePerNight/100 + '.' + roomCategory.pricePerNight%100 + ' DKK'}"
+                            +></td>
+                        <td>
+                            <!-- Button edit -->
+                            <a th:href="'/admin/edit-room-category/' + ${roomCategory.id}">Edit</a>
+                            <!-- Button delete -->
+                            <a th:href="'/admin/delete-room-category/' + ${roomCategory.id}">Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>

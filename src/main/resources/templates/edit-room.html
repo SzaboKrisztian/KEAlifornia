@@ -16,7 +16,6 @@
         <div class="container">
             <div class="jumbotron">
                 <h1 class="display-4">Welcome to KEAlifornia</h1>
-
             </div>
         </div>
     </main>
@@ -25,7 +24,6 @@
         <span class="alert alert-danger" th:if="${error.equals('room-already-exists')}">This room number is already in use.</span>
     </div>
     <p>
-
     </p>
     <form action="/admin/edit/" th:object="${room}" method="post">
         <input type="hidden" th:field="${room.id}" name="roomId">

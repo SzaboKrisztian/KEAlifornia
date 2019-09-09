@@ -52,7 +52,7 @@ public class ReceptionController {
     model.addAttribute("roomCatRepo", roomCategoryRepo);
     model.addAttribute("booking", bookingRepo.findBookingByRefNo(bookingRefNo));
 
-    return "reception/bookingCheckIn.html";
+    return "/reception/bookingCheckIn.html";
   }
 
 
@@ -129,9 +129,6 @@ public class ReceptionController {
                         @ModelAttribute("dob") String dob,
                         @ModelAttribute("data") CheckInForm data,
                         Model model) {
-//    for (String id : data.getSelectedRooms()) {
-//      System.out.println(id);
-//    }
     model.addAttribute("total", calculateTotalCost(occupancy, data.getSelectedRooms()));
     model.addAttribute("roomRepo", roomRepo);
     try {

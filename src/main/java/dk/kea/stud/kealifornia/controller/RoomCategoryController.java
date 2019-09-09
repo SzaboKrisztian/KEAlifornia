@@ -22,7 +22,7 @@ public class RoomCategoryController {
     public String showAllRoomCategory(Model model) throws Exception {
         List<RoomCategory> roomCategoryList = roomCategoryRepo.getAllRoomCategories();
         model.addAttribute("roomCategory", roomCategoryList);
-        return "/room-category/room-category";
+        return "/room-category/room-category.html";
     }
 
 
