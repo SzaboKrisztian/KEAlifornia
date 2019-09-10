@@ -71,7 +71,7 @@ public class ReceptionController {
     guestRepo.addGuest(occupancy.getGuest());
     bookingRepo.deleteBooking(bookingId);
 
-    return "redirect:/findBooking";
+    return "redirect:/admin/findBooking";
   }
 
   @GetMapping("/admin/noBooking")
