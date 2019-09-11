@@ -5,6 +5,15 @@ public class RoomCategory {
   private int pricePerNight;
   private String name;
   private String description;
+  private int hotelId;
+
+  public int getHotelId(){
+    return hotelId;
+  }
+
+  public void setHotelId(int hotelId) {
+    this.hotelId = hotelId;
+  }
 
   public int getId() {
     return id;

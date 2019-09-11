@@ -18,6 +18,7 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th>Price per night</th>
+                        <th>Hotel</th>
                         <th>
                             <a th:href="'/admin/add-room-category/'">Add room category</a>
                         </th>
@@ -29,6 +30,7 @@
                         <td th:text="${roomCategory.description}"></td>
                         <td th:text="${roomCategory.pricePerNight/100 + '.' + roomCategory.pricePerNight%100 + ' DKK'}"
                             +></td>
+                        <td th:text="${roomCategory.hotelId}"
                         <td>
                             <!-- Button edit -->
                             <a th:href="'/admin/edit-room-category/' + ${roomCategory.id}">Edit</a>

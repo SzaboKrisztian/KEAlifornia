@@ -22,19 +22,9 @@ public class RoomController {
 
     @GetMapping("/admin/room")
     public String room(){
-        return "room-form";
+        return "/room/room-form.html";
     }
 
-//    //TODO what's this one?
-//    @PostMapping("/admin/rooms/delete")
-//    public String deleteRoom(@PathVariable(name = "id") int id, Model model) {
-//        Room room = roomRepo.findRoomById(id);
-//        if (roomRepo.canDelete(room)) {
-//            roomRepo.deleteRoom(id);
-//            return "";
-//        } else
-//            return "";
-//    }
 
 public void useSession(HttpServletRequest req) {
     HttpSession httpSession = req.getSession(false); //False because we do not want it to create a new session if it does not exist.
@@ -55,13 +45,15 @@ public void useSession(HttpServletRequest req) {
                            @RequestParam String roomCategoryId, Model model){
         String roomId = String.valueOf(room.getId());
         Room currentRoom = roomRepo.findRoomById(Integer.parseInt(roomId));
-        Room roomAlreadyExists = roomRepo.findRoomByNumber(roomNumber);
+        //TODO hardcoded 1
+        Room roomAlreadyExists = roomRepo.findRoomByRoomNumberForHotel(roomNumber,1);
         if (roomAlreadyExists!= null && !currentRoom.getRoomNumber().equals(roomAlreadyExists.getRoomNumber())){
             String error = "room-already-exists";
             model.addAttribute("error", error);
             model.addAttribute("room", currentRoom);
-            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
-            return "edit-room";
+            //TODO hardcoded 1
+            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
+            return "/room/edit-room.html";
         }
         roomRepo.updateRoom(roomCategoryId,roomNumber,roomId);
         return "redirect:/admin/room";
@@ -76,9 +68,10 @@ public void useSession(HttpServletRequest req) {
 
     @GetMapping("/admin/rooms/add")
     public String addRoom(Model model) {
-        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
+        //TODO hardcoded 1
+        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
         model.addAttribute("room", new Room());
-        return "room-add";
+        return "/room/room-add.html";
     }
 
     @PostMapping("/admin/rooms/save")
@@ -88,7 +81,8 @@ public void useSession(HttpServletRequest req) {
         if(!roomRepo.checkRoom(roomNumber)){
             String error = "room-already-exists";
             model.addAttribute("error", error);
-            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategories());
+            //TODO hardcoded 1
+            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
             model.addAttribute("room", new Room());
             return "room-add";
         }

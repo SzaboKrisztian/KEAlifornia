@@ -5,6 +5,9 @@ public class Room {
     private RoomCategory roomCategory;
     private String roomNumber;
 
+
+
+
     public int getId() {
         return id;
     }
@@ -28,4 +31,6 @@ public class Room {
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
+
+
 }
