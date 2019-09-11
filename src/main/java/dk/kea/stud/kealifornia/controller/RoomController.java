@@ -39,6 +39,27 @@ public void useSession(HttpServletRequest req) {
 
 }
 
+    @PostMapping("/admin/rooms")
+    public String findRoom(@RequestParam(name = "getRoomNumber") String roomNumber, Model model) {
+        String error;
+        if(roomRepo.checkRoom(roomNumber)) {
+            error = "room-not-found";
+            model.addAttribute("error", error);
+            return "room-form";
+        }
+        //TODO hardcoded 1
+        Room room = roomRepo.findRoomByRoomNumberForHotel(roomNumber, 1);
+        if(!roomRepo.canDelete(room)){
+            error="cannot-delete";
+        }
+        else error="no-error";
+        model.addAttribute("error", error);
+        model.addAttribute("room", room);
+        //TODO hardcoded 1
+        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
+        return "edit-room";
+    }
+
     @PostMapping("/admin/edit/")
     public String editRoom(@ModelAttribute Room room,
                            @RequestParam String roomNumber,
