@@ -2,14 +2,18 @@ package dk.kea.stud.kealifornia;
 
 import dk.kea.stud.kealifornia.model.Booking;
 import dk.kea.stud.kealifornia.model.Occupancy;
+import dk.kea.stud.kealifornia.model.Preferences;
 import dk.kea.stud.kealifornia.model.Room;
 import dk.kea.stud.kealifornia.repository.BookingRepository;
 import dk.kea.stud.kealifornia.repository.OccupancyRepository;
+import dk.kea.stud.kealifornia.repository.PreferencesRepository;
 import dk.kea.stud.kealifornia.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +27,9 @@ public class Helper {
   private OccupancyRepository occupancyRepo;
   @Autowired
   private RoomRepository roomRepo;
+
+  @Autowired
+  private PreferencesRepository preferencesRepo;
 
   public Map<Integer, Integer> countAvailableRoomsForPeriod(LocalDate checkIn,
                                                              LocalDate checkOut) {
@@ -66,5 +73,17 @@ public class Helper {
       }
     }
     return result;
+  }
+
+  public Preferences getPreferences(HttpServletRequest request)
+  {
+    HttpSession httpSession = request.getSession(false); //False because we do not want it to create a new session if it does not exist.
+
+    Preferences preferences = null;
+    if(httpSession != null)
+      preferences = (Preferences) httpSession.getAttribute("preferences");
+    else
+      preferences = preferencesRepo.getDefaultPreference();
+    return preferences;
   }
 }

@@ -42,25 +42,6 @@ public class BookingController {
   @Autowired
   private ExchangeRateRepository exchangeRateRepo;
 
-//  //Making hotels model global
-//  @ModelAttribute("hotels")
-//  public List<Hotel> getHotels(){
-//    List<Hotel> hotelList= hotelRepo.getAllHotels();
-//    return hotelList;
-//  }
-//
-//  //Making currency model global
-//  @ModelAttribute("currencies")
-//  public List<ExchangeRate> getExchangeRates(){
-//    List<ExchangeRate> exchangeRateList= exchangeRateRepo.getAllExchangeRates();
-//    return exchangeRateList;
-//  }
-
-  @PostMapping("/select-preferences")
-  public void initializePreferences(HttpServletRequest req, @ModelAttribute Preferences preferences){
-    HttpSession httpSession = req.getSession();
-    httpSession.setAttribute("preferences", preferences);
-  }
 
 
   @GetMapping("/book")
