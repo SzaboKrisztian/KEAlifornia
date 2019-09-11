@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,9 +32,10 @@ public class OccupancyController {
   Helper helper;
 
   @GetMapping("/admin/occupancy")
-  public String showDefault(Model model) {
+  public String showDefault(Model model, HttpServletRequest request) {
     model.addAttribute("padding", LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), 1).getDayOfWeek().getValue() % 7);
-    model.addAttribute("calendar", getAvailabilityCalendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), 0));
+    model.addAttribute("calendar", getAvailabilityCalendarForHotel(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), 0,
+                                                                    helper.getPreferences(request).getHotel().getId()));
     model.addAttribute("months", generateMonths());
     model.addAttribute("monthNames", new DateFormatSymbols().getMonths());
     //TODO hardcoded
@@ -42,14 +44,14 @@ public class OccupancyController {
   }
 
   @PostMapping("/admin/occupancy")
-  public String showParticular(Model model,
+  public String showParticular(Model model, HttpServletRequest request,
                                @RequestParam("month") String monthData,
                                @RequestParam("category") int category) {
     String[] splitMonthData = monthData.split(", ");
     int year = Integer.parseInt(splitMonthData[0]);
     int month = Integer.parseInt(splitMonthData[1]);
     model.addAttribute("padding", LocalDate.of(year, month, 1).getDayOfWeek().getValue() % 7);
-    model.addAttribute("calendar", getAvailabilityCalendar(year, month, category));
+    model.addAttribute("calendar", getAvailabilityCalendarForHotel(year, month, category, helper.getPreferences(request).getHotel().getId()));
     model.addAttribute("months", generateMonths());
     model.addAttribute("monthNames", new DateFormatSymbols().getMonths());
     //TODO hardcoded
@@ -84,11 +86,11 @@ public class OccupancyController {
     return result;
   }
 
-  private Map<LocalDate, Integer> getAvailabilityCalendar(int year, int month, int category) {
+  private Map<LocalDate, Integer> getAvailabilityCalendarForHotel(int year, int month, int category, int hotelId) {
     Map<LocalDate, Integer> result = new LinkedHashMap<>();
     List<LocalDate> dates = generateDays(year, month);
     for (LocalDate day: dates) {
-      Map<Integer, Integer> availability = helper.countAvailableRoomsForPeriodForHotel(day, day.plusDays(1));
+      Map<Integer, Integer> availability = helper.countAvailableRoomsForPeriodForHotel(day, day.plusDays(1), hotelId);
       int noRoomsAvailable = 0;
       if (category == 0) {
         for (int noRoomsInCat: availability.values()) {
