@@ -19,7 +19,7 @@ public class RoomRepository {
   private RoomCategoryRepository roomCategoryRepo;
 
   public List<Room> findAllRoomsFromHotel(int hotelId) {
-    List<Room> result = null;
+    List<Room> result = new ArrayList<>();
 
     String query = "SELECT rooms.* FROM " +
         "rooms INNER JOIN room_categories " +

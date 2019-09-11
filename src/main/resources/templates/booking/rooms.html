@@ -27,8 +27,10 @@
                     </th:block>
                     <input type="hidden" th:object="${booking}">
                     <select class="form-control" name="roomtype" required>
-                        <option th:each="cat:${roomcatrepo.getAllRoomCategories()}" th:text="${cat.getName()} + ': ' +
-                         ${cat.getPricePerNight()} / 100 + ' DKK. ' + ${available.get(cat.getId())} + ' available'" th:value="${cat.getId()}"></option>
+                        <option th:each="cat:${roomcatrepo.getAllRoomCategoriesForHotel(session.preferences.hotel.id)}" th:text="${cat.getName()} + ': ' +
+                         ${cat.getPricePerNight() * exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getExchangeRate()}  / 100 +
+                         ' ' + ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()} + '. ' +
+                         ${available.get(cat.getId())} + ' available'" th:value="${cat.getId()}"></option>
                     </select>
                     <p>Number of rooms:</p>
                     <input type="number" step="1" min="1" name="norooms">
