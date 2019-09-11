@@ -13,6 +13,20 @@ CREATE TABLE guests
     PRIMARY KEY (id)
 );
 
+CREATE TABLE hotels
+(
+    id                  INT NOT NULL AUTO_INCREMENT UNIQUE
+    name                VARCHAR(140),
+);
+
+CREATE TABLE exchange_rates
+(
+    id                  INT NOT NULL AUTO_INCREMENT UNIQUE,
+    currency_name       VARCHAR(140);
+    exchange_rate       DOUBLE;
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE bookings
 (
     id              	INT NOT NULL AUTO_INCREMENT UNIQUE,
@@ -20,8 +34,11 @@ CREATE TABLE bookings
     check_in 			DATE,
     check_out 			DATE,
     ref_no				VARCHAR(140),
+    exchange_rate       DOUBLE,
+    currency_id         INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (guest_id) REFERENCES guests(id)
+    FOREIGN KEY (guest_id) REFERENCES guests(id),
+    FOREIGN KEY (currency_id) REFFERENCES exchange_rates (id)
 );
 
 CREATE TABLE room_categories
@@ -60,17 +77,22 @@ CREATE TABLE occupancies
     guest_id			INT NOT NULL,
     check_in			DATE,
     check_out			DATE,
+    exchange_rate       DOUBLE,
+    currency_id         INT,
     PRIMARY KEY (id),
     FOREIGN KEY (room_id) REFERENCES rooms(id),
-    FOREIGN KEY (guest_id) REFERENCES guests(id)
+    FOREIGN KEY (guest_id) REFERENCES guests(id),
+    FOREIGN KEY (currency_id) REFERENCES exchange_rates (id)
 );
 
 CREATE TABLE user
 (
   user_id 				INT NOT NULL AUTO_INCREMENT,
+  guest_id              INT,
   username 				VARCHAR(255) NOT NULL,
   password 				VARCHAR(255) NOT NULL,
   role 					VARCHAR(255) NOT NULL,
   enabled 				INT NOT NULL DEFAULT '1',
-  PRIMARY KEY (user_id)
+  PRIMARY KEY (user_id),
+  FOREIGN KEY (guest_id) REFERENCES guests (id)
 );
