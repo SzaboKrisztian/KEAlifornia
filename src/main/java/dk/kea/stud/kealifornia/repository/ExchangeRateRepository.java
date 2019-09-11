@@ -33,6 +33,19 @@ public class ExchangeRateRepository {
 
         return result;
     }
+    public ExchangeRate getExchangeRateById(int id) {
+        ExchangeRate result = null;
+
+        String query = "SELECT * FROM exchange_rates where id = ?;";
+        SqlRowSet rs = jdbc.queryForRowSet(query,id);
+
+
+        if (rs.first()) {
+            result = extractNextExchangeRateFromRowSet(rs);
+        }
+
+        return result;
+    }
 
     private ExchangeRate extractNextExchangeRateFromRowSet(SqlRowSet rs) {
         ExchangeRate result = new ExchangeRate();

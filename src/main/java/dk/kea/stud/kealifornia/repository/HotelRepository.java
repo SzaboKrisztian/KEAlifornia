@@ -33,6 +33,20 @@ public class HotelRepository {
         return result;
     }
 
+    public Hotel getHotelById(int id) {
+        Hotel result = null;
+
+        String query = "SELECT * FROM hotels where id = ?;";
+        SqlRowSet rs = jdbc.queryForRowSet(query,id);
+
+
+        if (rs.first()) {
+            result = extractNextHotelFromRowSet(rs);
+        }
+
+        return result;
+    }
+
     private Hotel extractNextHotelFromRowSet(SqlRowSet rs) {
         Hotel result = new Hotel();
 

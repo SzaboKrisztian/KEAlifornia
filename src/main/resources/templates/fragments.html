@@ -72,8 +72,8 @@
                             </select>
 
                             <select name="selectedExchangeRate" required>
-                                <option th:each="exchangeRate: ${exchangeRates}" th:value="${exchangeRate.id}">
-                                    <span th:text="${exchangeRate.name}"></span>
+                                <option th:each="exchangeRate: ${currencies}" th:value="${exchangeRate.id}">
+                                    <span th:text="${exchangeRate.currencyName}"></span>
                                 </option>
                             </select>
 
