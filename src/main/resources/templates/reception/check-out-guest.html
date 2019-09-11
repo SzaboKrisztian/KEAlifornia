@@ -13,9 +13,9 @@
             <div class="jumbotron">
                 <h2 class="display-4">Check-out rooms</h2>
                 <form method="post" action="/admin/check-out/guest/save">
-                <select class="form-control mb-4" th:name="selectedGuest">
-                    <option th:each="guest: ${guests}" th:value="${guest.id}">
-                        <span th:text="${guest.firstName} + ' ' + ${guest.lastName}"></span>
+                <select class="form-control mb-4" name="selectedGuest">
+                    <option th:each="occupancy: ${occupancies}" th:value="${occupancy.getGuest().getId()}">
+                        <span th:text="${occupancy.getGuest().getFirstName()} + ' ' + ${occupancy.getGuest().getLastName()}"></span>
                     </option>
                 </select>
                     <button type="submit">Check-out</button>

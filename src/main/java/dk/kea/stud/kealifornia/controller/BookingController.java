@@ -40,19 +40,19 @@ public class BookingController {
   @Autowired
   private ExchangeRateRepository exchangeRateRepo;
 
-  //Making hotels model global
-  @ModelAttribute("hotels")
-  public List<Hotel> getHotels(){
-    List<Hotel> hotelList= hotelRepo.getAllHotels();
-    return hotelList;
-  }
-
-  //Making currency model global
-  @ModelAttribute("currencies")
-  public List<ExchangeRate> getExchangeRates(){
-    List<ExchangeRate> exchangeRateList= exchangeRateRepo.getAllExchangeRates();
-    return exchangeRateList;
-  }
+//  //Making hotels model global
+//  @ModelAttribute("hotels")
+//  public List<Hotel> getHotels(){
+//    List<Hotel> hotelList= hotelRepo.getAllHotels();
+//    return hotelList;
+//  }
+//
+//  //Making currency model global
+//  @ModelAttribute("currencies")
+//  public List<ExchangeRate> getExchangeRates(){
+//    List<ExchangeRate> exchangeRateList= exchangeRateRepo.getAllExchangeRates();
+//    return exchangeRateList;
+//  }
 
 
   @GetMapping("/book")

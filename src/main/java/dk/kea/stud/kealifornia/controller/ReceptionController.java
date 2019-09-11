@@ -184,20 +184,18 @@ public class ReceptionController {
 
   @GetMapping("/admin/check-out/guest")
   public String showAllGuests(Model model) throws Exception {
-    List<Guest> guestList = guestRepo.getAllGuest();
-    model.addAttribute("guests", guestList);
+    List<Occupancy> occupancies = occupancyRepo.getAllOccupancies();
+    model.addAttribute("occupancies", occupancies);
     return "/reception/check-out-guest";
   }
 
   @PostMapping("/admin/check-out/guest/save")
-  public String checkOutGuest(@RequestParam("selectedGuest") int guest){
-    List<Occupancy> occupancyList = occupancyRepo.getAllOccupancies();
-    for(int i=0; i<occupancyList.size(); i++)
-    {
-      if(occupancyList.get(i).getGuest().getId() == guest)
-        occupancyRepo.deleteOccupancy(i);
+  public String checkOutGuest(@RequestParam("selectedGuest") int guestId){
+    for (Occupancy occupancy:occupancyRepo.getAllOccupancies()) {
+      if (occupancy.getGuest().getId() == guestId) {
+        occupancyRepo.deleteOccupancy(occupancy.getId());
+      }
     }
-    guestRepo.deleteGuest(guest);
     return "redirect:/admin/check-out/guest";
   }
 
