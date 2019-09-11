@@ -15,8 +15,8 @@ CREATE TABLE guests
 
 CREATE TABLE hotels
 (
-    id                  INT NOT NULL AUTO_INCREMENT UNIQUE
-    name                VARCHAR(140),
+    id                  INT NOT NULL AUTO_INCREMENT UNIQUE,
+    name                VARCHAR(140)
 );
 
 CREATE TABLE exchange_rates
@@ -38,7 +38,7 @@ CREATE TABLE bookings
     currency_id         INT,
     PRIMARY KEY (id),
     FOREIGN KEY (guest_id) REFERENCES guests(id),
-    FOREIGN KEY (currency_id) REFFERENCES exchange_rates (id)
+    FOREIGN KEY (currency_id) REFERENCES exchange_rates (id)
 );
 
 CREATE TABLE room_categories
@@ -47,7 +47,7 @@ CREATE TABLE room_categories
     name  	        	VARCHAR(140),
     description 		TEXT,
     price_per_night 	INT,
-    hotel_id,           INT,
+    hotel_id           INT,
     PRIMARY KEY (id),
     FOREIGN KEY (hotel_id) REFERENCES hotels (id)
 );
