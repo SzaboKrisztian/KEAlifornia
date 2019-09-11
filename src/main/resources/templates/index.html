@@ -15,7 +15,10 @@
     <main class="flex-fill text-center">
         <div class="container">
             <div class="jumbotron">
-                <h1 class="display-4">Welcome to KEAlifornia Hotel.</h1>
+                <h1 class="display-4">
+                    Welcome to
+                    <span th:text="${session.preferences} ? ${session.preferences.hotel.name} : ${defaultPreferences.hotel.name}"></span>
+                    Hotel.</h1>
                 <h3>Hotel Managers:</h3>
                 <span>Chris Szabo</span><br>
                 <span>Onescu Radu</span><br>

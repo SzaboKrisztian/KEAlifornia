@@ -46,6 +46,13 @@ public class WebController {
         return exchangeRateList;
     }
 
+    //Making a default model global to display in case the session is not created
+    @ModelAttribute("defaultPreferences")
+    public Preferences getDefaultPreferences(){
+        Preferences defaultPreferences= preferencesRepository.getDefaultPreference();
+        return defaultPreferences;
+    }
+
 
     @PostMapping("/select-preferences")
     public String initializePreferences(HttpServletRequest req, @RequestParam("selectedHotel") int hotel_id, @RequestParam("selectedExchangeRate") int currency_id){
@@ -61,9 +68,7 @@ public class WebController {
     }
 
     @GetMapping("/index")
-    public String showIndex(Model model, HttpServletRequest request) {
-        Preferences preferences = helper.getPreferences(request);
-        System.out.println(preferences);
+    public String showIndex(Model model) {
         return "/index";
     }
 
