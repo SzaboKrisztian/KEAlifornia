@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -54,6 +56,11 @@ public class BookingController {
 //    return exchangeRateList;
 //  }
 
+  @PostMapping("/select-preferences")
+  public void initializePreferences(HttpServletRequest req, @ModelAttribute Preferences preferences){
+    HttpSession httpSession = req.getSession();
+    httpSession.setAttribute("preferences", preferences);
+  }
 
   @GetMapping("/book")
   public String chooseDates() {

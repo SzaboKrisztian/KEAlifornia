@@ -39,7 +39,7 @@ public class RoomCategoryController {
     }
 
     @PostMapping("/admin/add-room-category/save")
-    public String saveRoomCategory(@ModelAttribute RoomCategory roomCategory, @ModelAttribute("a") String type) {
+    public String saveRoomCategory(@ModelAttribute RoomCategory roomCategory) {
         roomCategoryRepo.addRoomCategory(roomCategory);
         return "redirect:/admin/room-category";
     }
