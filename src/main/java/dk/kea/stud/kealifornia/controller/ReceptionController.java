@@ -105,7 +105,7 @@ public class ReceptionController {
     model.addAttribute("data", data);
     model.addAttribute("roomRepo", roomRepo);
     model.addAttribute("roomCatRepo", roomCategoryRepo);
-    model.addAttribute("totalAvailable", helper.countAvailableRoomsForPeriod(occupancy.getCheckIn(),occupancy.getCheckOut()));
+    model.addAttribute("totalAvailable", helper.countAvailableRoomsForPeriodForHotel(occupancy.getCheckIn(),occupancy.getCheckOut()));
     model.addAttribute("occupancy", occupancy);
 
     return "/reception/noBookingRooms.html";

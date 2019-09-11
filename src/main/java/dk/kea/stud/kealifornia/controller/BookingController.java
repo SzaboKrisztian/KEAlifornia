@@ -8,14 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -66,7 +63,7 @@ public class BookingController {
         return "/booking/dates.html";
       }
 
-      model.addAttribute("available", helper.countAvailableRoomsForPeriod(booking.getCheckIn(),
+      model.addAttribute("available", helper.countAvailableRoomsForPeriodForHotel(booking.getCheckIn(),
           booking.getCheckOut(), helper.getPreferences(request).getHotel().getId()));
       model.addAttribute("roomcatrepo", roomCategoryRepo);
       model.addAttribute("booking", booking);
@@ -78,9 +75,9 @@ public class BookingController {
                          @RequestParam(name = "roomtype") String typeId,
                          @RequestParam(name = "norooms") String noRooms,
                          @RequestParam(name = "action") String action,
-                         Model model) {
-    Map<Integer, Integer> available = helper.countAvailableRoomsForPeriod(booking.getCheckIn(),
-        booking.getCheckOut());
+                         Model model, HttpServletRequest request) {
+    Map<Integer, Integer> available = helper.countAvailableRoomsForPeriodForHotel(booking.getCheckIn(),
+        booking.getCheckOut(), helper.getPreferences(request).getHotel().getId());
     if (action.equals("add")) {
       int numberOfRooms;
       try {
