@@ -78,6 +78,8 @@ public class BookingRepository {
     result.setCheckIn(rs.getDate("check_in").toLocalDate());
     result.setCheckOut(rs.getDate("check_out").toLocalDate());
     result.setRefNo(rs.getString("ref_no"));
+    result.setExchangeRate(rs.getDouble("exchange_rate"));
+    result.setCurrencyId(rs.getInt("currency_id"));
 
     Map<Integer, Integer> bookedRooms = new HashMap<>();
     String query = "SELECT * FROM booked_rooms WHERE booking_id = ?;";
@@ -101,13 +103,16 @@ public class BookingRepository {
       @Override
       public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO bookings " +
-            "(guest_id, check_in, check_out, ref_no) VALUES (?, MAKEDATE(?, ?), MAKEDATE(?, ?), ?)", new String[]{"id"});
+            "(guest_id, check_in, check_out, ref_no, exchange_rate, currency_id) " +
+            "VALUES (?, MAKEDATE(?, ?), MAKEDATE(?, ?), ?, ?, ?)", new String[]{"id"});
         ps.setInt(1, booking.getGuest().getId());
         ps.setInt(2, booking.getCheckIn().getYear());
         ps.setInt(3, booking.getCheckIn().getDayOfYear());
         ps.setInt(4, booking.getCheckOut().getYear());
         ps.setInt(5, booking.getCheckOut().getDayOfYear());
         ps.setString(6, booking.getRefNo());
+        ps.setDouble(7, booking.getExchangeRate());
+        ps.setInt(8, booking.getCurrencyId());
         return ps;
       }
     };

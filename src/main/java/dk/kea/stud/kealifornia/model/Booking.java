@@ -12,9 +12,27 @@ public class Booking {
   private Map<Integer, Integer> bookedRooms;
   private LocalDate checkIn;
   private LocalDate checkOut;
+  private double exchangeRate;
+  private int currencyId;
 
   public Booking() {
     this.bookedRooms = new HashMap<>();
+  }
+
+  public double getExchangeRate() {
+    return exchangeRate;
+  }
+
+  public void setExchangeRate(double exchangeRate) {
+    this.exchangeRate = exchangeRate;
+  }
+
+  public int getCurrencyId() {
+    return currencyId;
+  }
+
+  public void setCurrencyId(int currencyId) {
+    this.currencyId = currencyId;
   }
 
   public int getId() {
