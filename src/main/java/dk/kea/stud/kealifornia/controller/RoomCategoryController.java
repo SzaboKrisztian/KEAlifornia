@@ -1,5 +1,6 @@
 package dk.kea.stud.kealifornia.controller;
 
+import dk.kea.stud.kealifornia.model.Preferences;
 import dk.kea.stud.kealifornia.model.RoomCategory;
 import dk.kea.stud.kealifornia.repository.RoomCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -19,8 +22,10 @@ public class RoomCategoryController {
     private RoomCategoryRepository roomCategoryRepo;
 
     @GetMapping("/admin/room-category")
-    public String showAllRoomCategory(Model model) throws Exception {
-        List<RoomCategory> roomCategoryList = roomCategoryRepo.getAllRoomCategories();
+    public String showAllRoomCategory(Model model,
+                                      HttpServletRequest request) throws Exception {
+        //TODO hardcoded 1
+        List<RoomCategory> roomCategoryList = roomCategoryRepo.getAllRoomCategoriesForHotel(1);
         model.addAttribute("roomCategory", roomCategoryList);
         return "/room-category/room-category.html";
     }

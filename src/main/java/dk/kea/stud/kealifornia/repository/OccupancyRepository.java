@@ -114,7 +114,8 @@ public class OccupancyRepository {
   public HashMap<Integer, List<Integer>> getAvailableRoomsForAllCategories() {
     HashMap<Integer, List<Integer>> result = new HashMap<>();
 
-    for (Integer category : roomCategoryRepo.getAllRoomIntCategories()) {
+    //TODO hardcoded 1
+    for (Integer category : roomCategoryRepo.getAllRoomIntCategoriesForHotel(1)) {
       result.put(category, getAvailableRoomsForCategory(category));
     }
 

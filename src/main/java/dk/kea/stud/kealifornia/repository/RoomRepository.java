@@ -18,17 +18,6 @@ public class RoomRepository {
   @Autowired
   private RoomCategoryRepository roomCategoryRepo;
 
-  public List<Room> findAllRooms() {
-    List<Room> roomsList = new ArrayList<>();
-
-    String query = "SELECT * FROM rooms";
-    SqlRowSet rs = jdbc.queryForRowSet(query);
-
-    while(rs.next()){
-      roomsList.add(extractNextRoomFromRowSet(rs));
-    }
-    return roomsList;
-  }
 
   public Room findRoomById(int id) {
     Room result = null;
@@ -43,7 +32,7 @@ public class RoomRepository {
     return result;
   }
 
-  public Room findRoomByNumber(String roomNumber){
+  public Room findRoomByRoomNumberForHotel(String roomNumber, int id){
     Room result = null;
 
     String query = "SELECT * FROM rooms where room_number = ?";
