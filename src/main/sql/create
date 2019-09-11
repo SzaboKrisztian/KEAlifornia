@@ -10,6 +10,7 @@ CREATE TABLE guests
     phone_no       		VARCHAR(140),
     doc_id_no   		VARCHAR(140),
     date_of_birth    	DATE,
+    points              INT,
     PRIMARY KEY (id)
 );
 

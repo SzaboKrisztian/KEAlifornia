@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -63,7 +64,7 @@ public class BookingController {
   @PostMapping("/book")
   public String processDates(@RequestParam(name = "checkin") String checkin,
                              @RequestParam(name = "checkout") String checkout,
-                             Model model) {
+                             Model model, HttpServletRequest request) {
       Booking booking = new Booking();
       try {
         booking.setCheckIn(LocalDate.parse(checkin, AppGlobals.DATE_FORMAT));
@@ -80,7 +81,7 @@ public class BookingController {
       }
 
       model.addAttribute("available", helper.countAvailableRoomsForPeriod(booking.getCheckIn(),
-          booking.getCheckOut()));
+          booking.getCheckOut(), helper.getPreferences(request).getHotel().getId()));
       model.addAttribute("roomcatrepo", roomCategoryRepo);
       model.addAttribute("booking", booking);
       return "/booking/rooms.html";

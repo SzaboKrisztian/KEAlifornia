@@ -25,10 +25,11 @@ public class Helper {
   private RoomRepository roomRepo;
 
   public Map<Integer, Integer> countAvailableRoomsForPeriod(LocalDate checkIn,
-                                                             LocalDate checkOut) {
+                                                             LocalDate checkOut,
+                                                            int hotelId) {
     Map<Integer, Integer> result = getRoomCountByCategory();
 
-    for (Booking booking: bookingRepo.getAllBookings()) {
+    for (Booking booking: bookingRepo.getAllBookingsForHotel(hotelId)) {
       if (areSchedulesConflicting(checkIn, checkOut, booking.getCheckIn(), booking.getCheckOut())) {
         for (Map.Entry<Integer, Integer> rooms: booking.getBookedRooms().entrySet()) {
           int roomCat = rooms.getKey();

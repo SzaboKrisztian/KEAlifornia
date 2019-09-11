@@ -1,22 +1,58 @@
 INSERT INTO user (user_id, username, password, role, enabled) VALUES
 ( NULL , "admin", "$2a$10$.4KH/WfJD8UWYhFZrDa0VuMC.uBLSM9OyvJYqK5FopItG8XNAsm3W", "ROLE_ADMIN", 1 );
 
-INSERT INTO kealifornia.room_categories (id, name, description, price_per_night) VALUES (1, 'Crap Room', 'Don''t pick this. You''ll regret it.', 40000);
-INSERT INTO kealifornia.room_categories (id, name, description, price_per_night) VALUES (2, 'Better Room', 'Slightly better. You''ll survive in here.', 80000);
-INSERT INTO kealifornia.room_categories (id, name, description, price_per_night) VALUES (3, 'Decent Room', 'You might even be able to get some shut-eye in here', 160000);
+INSERT INTO `kealifornia`.`room_categories` (`name`, `description`, `price_per_night`, `hotel_id`) VALUES ('Single', '1 person', '10000', '1');
+INSERT INTO `kealifornia`.`room_categories` (`name`, `description`, `price_per_night`, `hotel_id`) VALUES ('Double', '2 persons', '20000', '1');
+INSERT INTO `kealifornia`.`room_categories` (`name`, `description`, `price_per_night`, `hotel_id`) VALUES ('Twin', '2 persons', '18000', '1');
+INSERT INTO `kealifornia`.`room_categories` (`name`, `description`, `price_per_night`, `hotel_id`) VALUES ('Crap Room', '1 person', '11000', '2');
+INSERT INTO `kealifornia`.`room_categories` (`name`, `description`, `price_per_night`, `hotel_id`) VALUES ('Better Room', '1 person', '18000', '2');
+INSERT INTO `kealifornia`.`room_categories` (`name`, `description`, `price_per_night`, `hotel_id`) VALUES ('Fancy Room', '2 person', '33000', '2');
 
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (1, 1, '0001');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (2, 1, '0002');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (3, 1, '0003');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (4, 1, '0004');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (5, 1, '0005');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (6, 2, '0101');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (7, 2, '0102');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (8, 2, '0103');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (9, 2, '0104');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (10, 2, '0105');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (11, 3, '0201');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (12, 3, '0202');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (13, 3, '0203');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (14, 3, '0204');
-INSERT INTO kealifornia.rooms (id, room_cat_id, room_number) VALUES (15, 3, '0205');
+
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (1, '0001');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (1, '0002');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (1, '0003');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (1, '0004');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (1, '0005');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (2, '0101');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (2, '0102');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (2, '0103');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (2, '0104');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (2, '0105');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (3, '0201');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (3, '0202');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (3, '0203');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (3, '0204');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (3, '0205');
+
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (4, '0001');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (4, '0002');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (4, '0003');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (4, '0004');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (4, '0005');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (5, '0101');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (5, '0102');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (5, '0103');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (5, '0104');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (5, '0105');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (6, '0201');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (6, '0202');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (6, '0203');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (6, '0204');
+INSERT INTO kealifornia.rooms (room_cat_id, room_number) VALUES (6, '0205');
+
+INSERT INTO `kealifornia`.`hotels` (`name`) VALUES ('KEAlifornia');
+INSERT INTO `kealifornia`.`hotels` (`name`) VALUES ('Happy Holidays');
+
+INSERT INTO `kealifornia`.`exchange_rates` (`currency_name`, `exchange_rate`) VALUES ('DKK', '1');
+INSERT INTO `kealifornia`.`exchange_rates` (`currency_name`, `exchange_rate`) VALUES ('HHD', '0.43');
+
+INSERT INTO `kealifornia`.`bookings` (`guest_id`, `check_in`, `check_out`, `ref_no`, `exchange_rate`, `currency_id`) VALUES ('1', '2019-01-12', '2019-09-20', 'book1', '0.43', '2');
+INSERT INTO `kealifornia`.`bookings` (`guest_id`, `check_in`, `check_out`, `ref_no`, `exchange_rate`, `currency_id`) VALUES ('2', '2019-09-12', '2019-09-21', 'book2', '1', '1');
+
+INSERT INTO `kealifornia`.`booked_rooms` (`booking_id`, `category_id`, `no_of_rooms`) VALUES ('1', '1', '2');
+INSERT INTO `kealifornia`.`booked_rooms` (`booking_id`, `category_id`, `no_of_rooms`) VALUES ('1', '2', '2');
+INSERT INTO `kealifornia`.`booked_rooms` (`booking_id`, `category_id`, `no_of_rooms`) VALUES ('1', '3', '2');
+INSERT INTO `kealifornia`.`booked_rooms` (`booking_id`, `category_id`, `no_of_rooms`) VALUES ('2', '4', '2');
+INSERT INTO `kealifornia`.`booked_rooms` (`booking_id`, `category_id`, `no_of_rooms`) VALUES ('2', '5', '2');
+INSERT INTO `kealifornia`.`booked_rooms` (`booking_id`, `category_id`, `no_of_rooms`) VALUES ('2', '6', '2');
