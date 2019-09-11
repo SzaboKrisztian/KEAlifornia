@@ -10,7 +10,12 @@
 </head>
 <body>
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href="/">KEAlifornia Hotel</a>
+        <a class="navbar-brand" href="/">
+<!--            <span th:if="${session.preferences != null}" th:text="${session.preferences.hotel.name}" ? th:text="${defaultPreferences.hotel.name}"></span>-->
+            <span th:text="${session.preferences} ? ${session.preferences.hotel.name} : ${defaultPreferences.hotel.name}"></span>
+
+
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -68,6 +73,7 @@
                             <select name="selectedHotel" required>
                                 <option th:each="hotel: ${hotels}" th:value="${hotel.id}">
                                     <span th:text="${hotel.name}"></span>
+
                                 </option>
                             </select>
 
