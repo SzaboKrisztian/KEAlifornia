@@ -32,11 +32,14 @@ public class RoomRepository {
     return result;
   }
 
-  public Room findRoomByRoomNumberForHotel(String roomNumber, int id){
+  public Room findRoomByRoomNumberForHotel(String roomNumber, int hotelId){
     Room result = null;
 
-    String query = "SELECT * FROM rooms where room_number = ?";
-    SqlRowSet rs = jdbc.queryForRowSet(query, roomNumber);
+    String query = "SELECT rooms.id, rooms.room_cat_id, rooms.room_number FROM rooms " +
+            "INNER JOIN room_categories" +
+            "ON rooms.room_cat_id = room_categories.id " +
+            "WHERE rooms.room_number = ? AND room_categories.hotel_id = ?;";
+    SqlRowSet rs = jdbc.queryForRowSet(query, roomNumber,1);
 
     if(rs.first()){
       result = extractNextRoomFromRowSet(rs);

@@ -36,7 +36,8 @@ public class OccupancyController {
     model.addAttribute("calendar", getAvailabilityCalendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), 0));
     model.addAttribute("months", generateMonths());
     model.addAttribute("monthNames", new DateFormatSymbols().getMonths());
-    model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategories());
+    //TODO hardcoded
+    model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
     return "/reception/pickdate.html";
   }
 
@@ -51,7 +52,8 @@ public class OccupancyController {
     model.addAttribute("calendar", getAvailabilityCalendar(year, month, category));
     model.addAttribute("months", generateMonths());
     model.addAttribute("monthNames", new DateFormatSymbols().getMonths());
-    model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategories());
+    //TODO hardcoded
+    model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
     return "/reception/pickdate.html";
   }
 
