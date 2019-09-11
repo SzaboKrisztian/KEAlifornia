@@ -52,11 +52,16 @@ public class BookingRepository {
     return result;
   }
 
-  public List<Booking> getAllBookings() {
+  public List<Booking> getAllBookingsForHotel(int hotelId) {
     List<Booking> result = new ArrayList<>();
 
-    String query = "SELECT * FROM bookings;";
-    SqlRowSet rs = jdbc.queryForRowSet(query);
+    String query = "SELECT DISTINCT bookings.* FROM " +
+        "bookings INNER JOIN booked_rooms " +
+        "ON bookings.id = booked_rooms.booking_id " +
+        "INNER JOIN room_categories " +
+        "ON booked_rooms.category_id = room_categories.id " +
+        "WHERE room_categories.hotel_id = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, hotelId);
 
     while (rs.next()) {
       result.add(extractNextBookingFromRowSet(rs));
