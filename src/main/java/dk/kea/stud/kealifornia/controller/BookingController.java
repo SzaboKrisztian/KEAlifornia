@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -40,18 +42,24 @@ public class BookingController {
   @Autowired
   private ExchangeRateRepository exchangeRateRepo;
 
-  //Making hotels model global
-  @ModelAttribute("hotels")
-  public List<Hotel> getHotels(){
-    List<Hotel> hotelList= hotelRepo.getAllHotels();
-    return hotelList;
-  }
+//  //Making hotels model global
+//  @ModelAttribute("hotels")
+//  public List<Hotel> getHotels(){
+//    List<Hotel> hotelList= hotelRepo.getAllHotels();
+//    return hotelList;
+//  }
+//
+//  //Making currency model global
+//  @ModelAttribute("currencies")
+//  public List<ExchangeRate> getExchangeRates(){
+//    List<ExchangeRate> exchangeRateList= exchangeRateRepo.getAllExchangeRates();
+//    return exchangeRateList;
+//  }
 
-  //Making currency model global
-  @ModelAttribute("currencies")
-  public List<ExchangeRate> getExchangeRates(){
-    List<ExchangeRate> exchangeRateList= exchangeRateRepo.getAllExchangeRates();
-    return exchangeRateList;
+  @PostMapping("/select-preferences")
+  public void initializePreferences(HttpServletRequest req, @ModelAttribute Preferences preferences){
+    HttpSession httpSession = req.getSession();
+    httpSession.setAttribute("preferences", preferences);
   }
 
 

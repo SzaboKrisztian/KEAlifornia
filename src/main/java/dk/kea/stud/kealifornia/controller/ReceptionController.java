@@ -197,7 +197,6 @@ public class ReceptionController {
       if(occupancyList.get(i).getGuest().getId() == guest)
         occupancyRepo.deleteOccupancy(i);
     }
-    guestRepo.deleteGuest(guest);
     return "redirect:/admin/check-out/guest";
   }
 

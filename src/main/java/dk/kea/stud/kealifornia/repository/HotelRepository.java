@@ -23,7 +23,7 @@ public class HotelRepository {
     public List<Hotel> getAllHotels() {
         List<Hotel> result = new ArrayList<>();
 
-        String query = "SELECT * FROM hotel;";
+        String query = "SELECT * FROM hotels;";
         SqlRowSet rs = jdbc.queryForRowSet(query);
 
         while (rs.next()) {

@@ -61,6 +61,27 @@
                 <a class="nav-item nav-link" href="/logout" sec:authorize="isAuthenticated()">Logout</a>
                 </li>
 
+                <li class="nav-item">
+                    
+                        <form method="post" action="/select-preferences">
+
+                            <select name="selectedHotel" required>
+                                <option th:each="hotel: ${hotels}" th:value="${hotel.id}">
+                                    <span th:text="${hotel.name}"></span>
+                                </option>
+                            </select>
+
+                            <select name="selectedExchangeRate" required>
+                                <option th:each="exchangeRate: ${exchangeRates}" th:value="${exchangeRate.id}">
+                                    <span th:text="${exchangeRate.name}"></span>
+                                </option>
+                            </select>
+
+                            <button type="submit">Save</button>
+
+                        </form>
+                </li>
+
 
 
             </ul>
