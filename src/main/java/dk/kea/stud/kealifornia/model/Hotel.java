@@ -1,37 +1,38 @@
 package dk.kea.stud.kealifornia.model;
 
-import java.util.List;
-
 public class Hotel {
-  private static Hotel instance;
-  private List<Booking> bookings;
-  private List<Occupancy> occupancies;
+  private int id;
+  private String name;
 
-  private Hotel() {
-
+  public Hotel(int id, String name) {
+    this.id = id;
+    this.name = name;
   }
 
-  public static Hotel getInstance() {
-    if (instance == null) {
-      instance = new Hotel();
-    }
-
-    return instance;
+  public Hotel() {
   }
 
-  public List<Booking> getBookings() {
-    return bookings;
+  public int getId() {
+    return id;
   }
 
-  public void setBookings(List<Booking> bookings) {
-    this.bookings = bookings;
+  public void setId(int id) {
+    this.id = id;
   }
 
-  public List<Occupancy> getOccupancies() {
-    return occupancies;
+  public String getName() {
+    return name;
   }
 
-  public void setOccupancies(List<Occupancy> occupancies) {
-    this.occupancies = occupancies;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return "Hotel{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
   }
 }

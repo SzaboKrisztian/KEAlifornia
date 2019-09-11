@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 @Controller
 @SessionAttributes("booking")
+@ControllerAdvice
 public class BookingController {
   @Autowired
   BookingRepository bookingRepo;
@@ -31,17 +34,36 @@ public class BookingController {
   @Autowired
   Helper helper;
 
+  @Autowired
+  private HotelRepository hotelRepo;
+
+  @Autowired
+  private ExchangeRateRepository exchangeRateRepo;
+
+  //Making hotels model global
+  @ModelAttribute("hotels")
+  public List<Hotel> getHotels(){
+    List<Hotel> hotelList= hotelRepo.getAllHotels();
+    return hotelList;
+  }
+
+  //Making currency model global
+  @ModelAttribute("currencies")
+  public List<ExchangeRate> getExchangeRates(){
+    List<ExchangeRate> exchangeRateList= exchangeRateRepo.getAllExchangeRates();
+    return exchangeRateList;
+  }
+
+
   @GetMapping("/book")
   public String chooseDates() {
     return "/booking/dates.html";
-
-
   }
 
   @PostMapping("/book")
   public String processDates(@RequestParam(name = "checkin") String checkin,
-                            @RequestParam(name = "checkout") String checkout,
-                            Model model) {
+                             @RequestParam(name = "checkout") String checkout,
+                             Model model) {
       Booking booking = new Booking();
       try {
         booking.setCheckIn(LocalDate.parse(checkin, AppGlobals.DATE_FORMAT));
