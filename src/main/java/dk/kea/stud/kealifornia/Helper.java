@@ -31,10 +31,10 @@ public class Helper {
   @Autowired
   private PreferencesRepository preferencesRepo;
 
-  public Map<Integer, Integer> countAvailableRoomsForPeriod(LocalDate checkIn,
-                                                             LocalDate checkOut,
-                                                            int hotelId) {
-    Map<Integer, Integer> result = getRoomCountByCategory();
+  public Map<Integer, Integer> countAvailableRoomsForPeriodForHotel(LocalDate checkIn,
+                                                                    LocalDate checkOut,
+                                                                    int hotelId) {
+    Map<Integer, Integer> result = getRoomCountByCategoryForHotel(hotelId);
 
     for (Booking booking: bookingRepo.getAllBookingsForHotel(hotelId)) {
       if (areSchedulesConflicting(checkIn, checkOut, booking.getCheckIn(), booking.getCheckOut())) {
@@ -63,9 +63,9 @@ public class Helper {
         (newCheckin.isBefore(existingCheckin) && newCheckout.isAfter(existingCheckout));
   }
 
-  public Map<Integer, Integer> getRoomCountByCategory() {
+  public Map<Integer, Integer> getRoomCountByCategoryForHotel(int hotelId) {
     Map<Integer, Integer> result = new HashMap<>();
-    for (Room room: roomRepo.findAllRooms()) {
+    for (Room room: roomRepo.findAllRoomsFromHotel(hotelId)) {
       int roomCat = room.getRoomCategory().getId();
       if (!result.containsKey(roomCat)) {
         result.put(roomCat, 1);

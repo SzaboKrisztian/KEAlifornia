@@ -18,6 +18,21 @@ public class RoomRepository {
   @Autowired
   private RoomCategoryRepository roomCategoryRepo;
 
+  public List<Room> findAllRoomsFromHotel(int hotelId) {
+    List<Room> result = null;
+
+    String query = "SELECT rooms.* FROM " +
+        "rooms INNER JOIN room_categories " +
+        "ON rooms.room_cat_id = room_categories.id " +
+        "WHERE room_categories.hotel_id = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, hotelId);
+
+    while (rs.next()) {
+      result.add(extractNextRoomFromRowSet(rs));
+    }
+
+    return result;
+  }
 
   public Room findRoomById(int id) {
     Room result = null;
@@ -41,16 +56,6 @@ public class RoomRepository {
     if(rs.first()){
       result = extractNextRoomFromRowSet(rs);
     }
-
-    return result;
-  }
-
-  private Room extractNextRoomFromRowSet(SqlRowSet rs) {
-    Room result = new Room();
-
-    result.setId(rs.getInt("id"));
-    result.setRoomCategory(roomCategoryRepo.findRoomCategoryById(rs.getInt("room_cat_id")));
-    result.setRoomNumber(rs.getString("room_number"));
 
     return result;
   }
@@ -89,5 +94,15 @@ public class RoomRepository {
             roomCategoryId,
             roomNumber,
             roomId);
+  }
+
+  private Room extractNextRoomFromRowSet(SqlRowSet rs) {
+    Room result = new Room();
+
+    result.setId(rs.getInt("id"));
+    result.setRoomCategory(roomCategoryRepo.findRoomCategoryById(rs.getInt("room_cat_id")));
+    result.setRoomNumber(rs.getString("room_number"));
+
+    return result;
   }
 }

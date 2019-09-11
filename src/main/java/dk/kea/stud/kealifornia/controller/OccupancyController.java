@@ -86,7 +86,7 @@ public class OccupancyController {
     Map<LocalDate, Integer> result = new LinkedHashMap<>();
     List<LocalDate> dates = generateDays(year, month);
     for (LocalDate day: dates) {
-      Map<Integer, Integer> availability = helper.countAvailableRoomsForPeriod(day, day.plusDays(1));
+      Map<Integer, Integer> availability = helper.countAvailableRoomsForPeriodForHotel(day, day.plusDays(1));
       int noRoomsAvailable = 0;
       if (category == 0) {
         for (int noRoomsInCat: availability.values()) {
