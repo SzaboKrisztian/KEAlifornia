@@ -14,6 +14,7 @@ public class RoomRepository {
 
   @Autowired
   private JdbcTemplate jdbc;
+
   @Autowired
   private RoomCategoryRepository roomCategoryRepo;
 
