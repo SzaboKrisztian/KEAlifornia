@@ -18,13 +18,16 @@
                         <td th:text="${occupancy.getCheckIn()} + ' - ' + ${occupancy.getCheckOut()}"></td>
                     </tr>
                     <tr th:each="roomId:${data.getSelectedRooms()}">
+                        <td>Room:</td>
                         <td th:text="${roomRepo.findRoomById(T(java.lang.Integer).parseInt(roomId)).getRoomNumber()} + ' (' +
-                            ${roomRepo.findRoomById(T(java.lang.Integer).parseInt(roomId)).getRoomCategory().getPricePerNight() / 100} +
-                            ' DKK)'"></td>
+                            ${roomRepo.findRoomById(T(java.lang.Integer).parseInt(roomId)).getRoomCategory().getPricePerNight() *
+                            exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getExchangeRate()/ 100} + ' ' +
+                           ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()} + '/night) '"></td>
                     </tr>
                     <tr>
                         <td>Total:</td>
-                        <td th:text="${total} / 100"></td>
+                        <td th:text="${total * exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getExchangeRate() } / 100 + ' ' +
+                                    ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()}"></td>
                     </tr>
                 </table>
                 <table>

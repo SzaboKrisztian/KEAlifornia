@@ -45,11 +45,16 @@ public class OccupancyRepository {
     return result;
   }
 
-  public List<Occupancy> getAllOccupancies() {
+  public List<Occupancy> getAllOccupanciesForHotel(int hotelId) {
     List<Occupancy> result = new ArrayList<>();
 
-    String query = "SELECT * FROM occupancies;";
-    SqlRowSet rs = jdbc.queryForRowSet(query);
+    String query = "SELECT occupancies.* FROM " +
+        "occupancies INNER JOIN rooms " +
+        "ON occupancies.room_id = rooms.id " +
+        "INNER JOIN room_categories " +
+        "ON rooms.room_cat_id = room_categories.id " +
+        "WHERE room_categories.hotel_id = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, hotelId);
 
     while (rs.next()) {
       result.add(extractNextOccupancyFromRowSet(rs));
@@ -66,6 +71,8 @@ public class OccupancyRepository {
     result.setGuest(guestRepo.findGuestById(rs.getInt("guest_id")));
     result.setCheckIn(rs.getDate("check_in").toLocalDate());
     result.setCheckOut(rs.getDate("check_out").toLocalDate());
+    result.setExchangeRate(rs.getDouble("exchange_rate"));
+    result.setCurrencyId(rs.getInt("currency_id"));
 
     return result;
   }

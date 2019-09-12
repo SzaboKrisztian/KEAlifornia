@@ -18,7 +18,9 @@
                 <p>Available rooms for period:
                     <span th:each="category:${totalAvailable.keySet()}"
                           th:text="' ' + ${totalAvailable.get(category)} + ' ' + ${roomCatRepo.findRoomCategoryById(category).getName()}
-                          + '(' + ${roomCatRepo.findRoomCategoryById(category).getPricePerNight() / 100} + '/night) '">
+                          + '(' + ${roomCatRepo.findRoomCategoryById(category).getPricePerNight() *
+                           exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getExchangeRate()/ 100} + ' ' +
+                           ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()} + '/night) '">
                     </span>
                 </p>
                 <form action="/admin/noBooking/guestDetails" method="post">

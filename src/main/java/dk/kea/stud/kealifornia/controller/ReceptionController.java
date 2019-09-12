@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -31,6 +32,8 @@ public class ReceptionController {
   private GuestRepository guestRepo;
   @Autowired
   private Helper helper;
+  @Autowired
+  private ExchangeRateRepository exchangeRateRepo;
 
   @GetMapping("/admin/findBooking")
   public String findBooking() {
@@ -83,7 +86,7 @@ public class ReceptionController {
   @PostMapping("/admin/noBooking/selectRooms")
   public String processDates(@RequestParam(name = "checkin") String checkin,
                              @RequestParam(name = "checkout") String checkout,
-                             Model model) {
+                             Model model, HttpServletRequest request) {
     Occupancy occupancy = new Occupancy();
     try {
       occupancy.setCheckIn(LocalDate.parse(checkin, AppGlobals.DATE_FORMAT));
@@ -98,16 +101,18 @@ public class ReceptionController {
       return "/reception/noBookingDates.html";
     }
 
+    int hotelId = helper.getPreferences(request).getHotel().getId();
     CheckInForm data = new CheckInForm();
 
-    data.setAvailableRoomsForEachCategory(occupancyRepo.getAvailableRoomsForAllCategoriesForHotel(1));
+    data.setAvailableRoomsForEachCategory(occupancyRepo.getAvailableRoomsForAllCategoriesForHotel(hotelId));
     data.setSelectedRooms(new ArrayList<>());
 
     model.addAttribute("data", data);
     model.addAttribute("roomRepo", roomRepo);
     model.addAttribute("roomCatRepo", roomCategoryRepo);
-    //model.addAttribute("totalAvailable", helper.countAvailableRoomsForPeriodForHotel(occupancy.getCheckIn(),occupancy.getCheckOut()));
+    model.addAttribute("totalAvailable", helper.countAvailableRoomsForPeriodForHotel(occupancy.getCheckIn(), occupancy.getCheckOut(), hotelId));
     model.addAttribute("occupancy", occupancy);
+    model.addAttribute("exchangeRateRepo", exchangeRateRepo);
 
     return "/reception/noBookingRooms.html";
   }
@@ -137,6 +142,7 @@ public class ReceptionController {
       occupancy.setGuest(guest);
       model.addAttribute("occupancy", occupancy);
       model.addAttribute("data", data);
+      model.addAttribute("exchangeRateRepo", exchangeRateRepo);
       return "/reception/noBookingSummary.html";
     } catch (DateTimeParseException e) {
       model.addAttribute("occupancy", occupancy);
@@ -150,7 +156,11 @@ public class ReceptionController {
   @PostMapping("/admin/noBooking/checkIn/confirmed")
   public String updateDatabase(@ModelAttribute("occupancy") Occupancy occupancy,
                                @ModelAttribute("data") CheckInForm data,
-                               Model model) {
+                               Model model, HttpServletRequest request) {
+    int currencyId = helper.getPreferences(request).getCurrencyId();
+    occupancy.setExchangeRate(exchangeRateRepo.getExchangeRateById(currencyId).getExchangeRate());
+    occupancy.setCurrencyId(currencyId);
+
     guestRepo.addGuest(occupancy.getGuest());
     for (Room room : occupancyRepo.convertStringSelectedRooms(data.getSelectedRooms())) {
       occupancy.setRoom(room);
@@ -161,21 +171,22 @@ public class ReceptionController {
     model.addAttribute("occupancy", occupancy);
     model.addAttribute("data", data);
     model.addAttribute("total", calculateTotalCost(occupancy, data.getSelectedRooms()));
+    model.addAttribute("exchangeRateRepo", exchangeRateRepo);
     return "/reception/noBookingConfirmed.html";
   }
 
+  //TODO get hotel id from session
   @GetMapping("/admin/check-out/rooms")
   public String showAllOccupancy(Model model) throws Exception {
-    List<Occupancy> occupancyList = occupancyRepo.getAllOccupancies();
+    List<Occupancy> occupancyList = occupancyRepo.getAllOccupanciesForHotel(1);
     model.addAttribute("occupancies", occupancyList);
     return "/reception/check-out-rooms";
   }
 
-  //TODO delete guests
   @PostMapping("/admin/check-out/rooms/save")
-  public String checkOutRooms(@RequestParam("occupancyChecked") List<String> selectedRooms){
-    if(selectedRooms != null){
-      for(String occupancy : selectedRooms){
+  public String checkOutRooms(@RequestParam("occupancyChecked") List<String> selectedRooms) {
+    if (selectedRooms != null) {
+      for (String occupancy : selectedRooms) {
         int occupancyId = Integer.parseInt(occupancy);
         occupancyRepo.deleteOccupancy(occupancyId);
       }
@@ -183,16 +194,18 @@ public class ReceptionController {
     return "redirect:/admin/check-out/rooms";
   }
 
+  //TODO get hotel id from session
   @GetMapping("/admin/check-out/guest")
   public String showAllGuests(Model model) throws Exception {
-    List<Occupancy> occupancies = occupancyRepo.getAllOccupancies();
+    List<Occupancy> occupancies = occupancyRepo.getAllOccupanciesForHotel(1);
     model.addAttribute("occupancies", occupancies);
     return "/reception/check-out-guest";
   }
 
+  //TODO get hotel id from session
   @PostMapping("/admin/check-out/guest/save")
-  public String checkOutGuest(@RequestParam("selectedGuest") int guestId){
-    for (Occupancy occupancy:occupancyRepo.getAllOccupancies()) {
+  public String checkOutGuest(@RequestParam("selectedGuest") int guestId) {
+    for (Occupancy occupancy : occupancyRepo.getAllOccupanciesForHotel(1)) {
       if (occupancy.getGuest().getId() == guestId) {
         occupancyRepo.deleteOccupancy(occupancy.getId());
       }
