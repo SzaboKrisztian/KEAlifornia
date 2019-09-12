@@ -177,8 +177,9 @@ public class ReceptionController {
 
   //TODO get hotel id from session
   @GetMapping("/admin/check-out/rooms")
-  public String showAllOccupancy(Model model) throws Exception {
-    List<Occupancy> occupancyList = occupancyRepo.getAllOccupanciesForHotel(1);
+  public String showAllOccupancy(Model model, HttpServletRequest request) throws Exception {
+    int hotelId = helper.getPreferences(request).getHotel().getId();
+    List<Occupancy> occupancyList = occupancyRepo.getAllOccupanciesForHotel(hotelId);
     model.addAttribute("occupancies", occupancyList);
     return "/reception/check-out-rooms";
   }
@@ -196,16 +197,19 @@ public class ReceptionController {
 
   //TODO get hotel id from session
   @GetMapping("/admin/check-out/guest")
-  public String showAllGuests(Model model) throws Exception {
-    List<Occupancy> occupancies = occupancyRepo.getAllOccupanciesForHotel(1);
+  public String showAllGuests(Model model, HttpServletRequest request) throws Exception {
+    int hotelId = helper.getPreferences(request).getHotel().getId();
+    List<Occupancy> occupancies = occupancyRepo.getAllOccupanciesForHotel(hotelId);
     model.addAttribute("occupancies", occupancies);
     return "/reception/check-out-guest";
   }
 
   //TODO get hotel id from session
   @PostMapping("/admin/check-out/guest/save")
-  public String checkOutGuest(@RequestParam("selectedGuest") int guestId) {
-    for (Occupancy occupancy : occupancyRepo.getAllOccupanciesForHotel(1)) {
+  public String checkOutGuest(@RequestParam("selectedGuest") int guestId,
+                              HttpServletRequest request) {
+    int hotelId = helper.getPreferences(request).getHotel().getId();
+    for (Occupancy occupancy : occupancyRepo.getAllOccupanciesForHotel(hotelId)) {
       if (occupancy.getGuest().getId() == guestId) {
         occupancyRepo.deleteOccupancy(occupancy.getId());
       }
