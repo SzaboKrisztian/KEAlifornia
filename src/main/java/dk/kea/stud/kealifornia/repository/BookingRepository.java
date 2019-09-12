@@ -25,6 +25,8 @@ public class BookingRepository {
   private JdbcTemplate jdbc;
   @Autowired
   private GuestRepository guestRepo;
+  @Autowired
+  private ExchangeRateRepository exchangeRateRepo;
 
   public Booking findBookingById(int id) {
     Booking result = null;
@@ -95,10 +97,12 @@ public class BookingRepository {
     return result;
   }
 
-  public Booking addBooking(Booking booking) {
+  public Booking addBooking(Booking booking, int id) {
     Guest updateGuest = guestRepo.addGuest(booking.getGuest());
     booking.setGuest(updateGuest);
     booking.setRefNo(generateUniqueReferenceNo());
+    booking.setCurrencyId(id);
+    booking.setExchangeRate(exchangeRateRepo.getExchangeRateById(id).getExchangeRate());
     PreparedStatementCreator psc = new PreparedStatementCreator() {
       @Override
       public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {

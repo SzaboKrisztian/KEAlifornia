@@ -102,12 +102,14 @@ public class BookingController {
         model.addAttribute("available", available);
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/rooms.html";
       } else {
         model.addAttribute("available", available);
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
         model.addAttribute("error", "notenough");
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/rooms.html";
       }
     } else if (action.equals("reset")) {
@@ -123,11 +125,13 @@ public class BookingController {
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
         model.addAttribute("error", "norooms");
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/rooms.html";
       } else {
         model.addAttribute("total", calculateTotalCost(booking));
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/review.html";
       }
     }
@@ -150,6 +154,7 @@ public class BookingController {
                             Model model) {
     model.addAttribute("total", calculateTotalCost(booking));
     model.addAttribute("roomcatrepo", roomCategoryRepo);
+    model.addAttribute("exchangeRateRepo", exchangeRateRepo);
     try {
       guest.setDateOfBirth(LocalDate.parse(dob, AppGlobals.DATE_FORMAT));
       booking.setGuest(guest);
@@ -165,11 +170,12 @@ public class BookingController {
 
   @PostMapping("/summary")
   public String viewSummary(@ModelAttribute("booking") Booking booking,
-                            Model model) {
-    bookingRepo.addBooking(booking);
+                            Model model, HttpServletRequest request) {
+    bookingRepo.addBooking(booking, helper.getPreferences(request).getCurrencyId());
     model.addAttribute("total", calculateTotalCost(booking));
     model.addAttribute("booking", booking);
     model.addAttribute("roomcatrepo", roomCategoryRepo);
+    model.addAttribute("exchangeRateRepo", exchangeRateRepo);
     return "/booking/summary.html";
   }
 
