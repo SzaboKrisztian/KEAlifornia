@@ -2,10 +2,7 @@ package dk.kea.stud.kealifornia.controller;
 
 import dk.kea.stud.kealifornia.AppGlobals;
 import dk.kea.stud.kealifornia.Helper;
-import dk.kea.stud.kealifornia.model.CheckInForm;
-import dk.kea.stud.kealifornia.model.Guest;
-import dk.kea.stud.kealifornia.model.Occupancy;
-import dk.kea.stud.kealifornia.model.Room;
+import dk.kea.stud.kealifornia.model.*;
 import dk.kea.stud.kealifornia.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,14 +40,16 @@ public class ReceptionController {
   @PostMapping("/admin/findBooking")
   public String checkIn(@RequestParam String bookingRefNo, Model model) {
     CheckInForm data = new CheckInForm();
+    Booking booking = bookingRepo.findBookingByRefNo(bookingRefNo);
+    int hotelId = bookingRepo.getHotelId(booking.getId());
 
-    data.setAvailableRoomsForEachCategory(occupancyRepo.getAvailableRoomsForAllCategories());
+    data.setAvailableRoomsForEachCategory(occupancyRepo.getAvailableRoomsForAllCategoriesForHotel(hotelId));
     data.setSelectedRooms(new ArrayList<>());
 
     model.addAttribute("data", data);
     model.addAttribute("roomRepo", roomRepo);
     model.addAttribute("roomCatRepo", roomCategoryRepo);
-    model.addAttribute("booking", bookingRepo.findBookingByRefNo(bookingRefNo));
+    model.addAttribute("booking", booking);
 
     return "/reception/bookingCheckIn.html";
   }
@@ -59,16 +58,18 @@ public class ReceptionController {
   @PostMapping("/admin/checkIn/{bookingId}")
   public String updateDatabase(@ModelAttribute CheckInForm data,
                                @PathVariable(name = "bookingId") int bookingId) {
+    Booking booking = bookingRepo.findBookingById(bookingId);
     Occupancy occupancy = new Occupancy();
-    occupancy.setCheckIn(bookingRepo.findBookingById(bookingId).getCheckIn());
-    occupancy.setCheckOut(bookingRepo.findBookingById(bookingId).getCheckOut());
-    occupancy.setGuest(bookingRepo.findBookingById(bookingId).getGuest());
 
+    occupancy.setCheckIn(booking.getCheckIn());
+    occupancy.setCheckOut(booking.getCheckOut());
+    occupancy.setGuest(booking.getGuest());
+    occupancy.setExchangeRate(booking.getExchangeRate());
+    occupancy.setCurrencyId(booking.getCurrencyId());
     for (Room room : occupancyRepo.convertStringSelectedRooms(data.getSelectedRooms())) {
       occupancy.setRoom(room);
       occupancyRepo.addOccupancy(occupancy);
     }
-    guestRepo.addGuest(occupancy.getGuest());
     bookingRepo.deleteBooking(bookingId);
 
     return "redirect:/admin/findBooking";
@@ -99,7 +100,7 @@ public class ReceptionController {
 
     CheckInForm data = new CheckInForm();
 
-    data.setAvailableRoomsForEachCategory(occupancyRepo.getAvailableRoomsForAllCategories());
+    data.setAvailableRoomsForEachCategory(occupancyRepo.getAvailableRoomsForAllCategoriesForHotel(1));
     data.setSelectedRooms(new ArrayList<>());
 
     model.addAttribute("data", data);

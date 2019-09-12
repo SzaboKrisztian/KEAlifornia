@@ -76,11 +76,13 @@ public class OccupancyRepository {
       @Override
       public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO occupancies " +
-            "(room_id, guest_id, check_in, check_out) VALUES (?, ?, ?, ?)", new String[]{"id"});
+            "(room_id, guest_id, check_in, check_out, exchange_rate, currency_id) VALUES (?, ?, ?, ?, ?, ?)", new String[]{"id"});
         ps.setInt(1, occupancy.getRoom().getId());
         ps.setInt(2, occupancy.getGuest().getId());
         ps.setDate(3, Date.valueOf(occupancy.getCheckIn()));
         ps.setDate(4, Date.valueOf(occupancy.getCheckOut()));
+        ps.setDouble(5, occupancy.getExchangeRate());
+        ps.setInt(6, occupancy.getCurrencyId());
         return ps;
       }
     };
@@ -111,11 +113,10 @@ public class OccupancyRepository {
     return result;
   }
 
-  public HashMap<Integer, List<Integer>> getAvailableRoomsForAllCategories() {
+  public HashMap<Integer, List<Integer>> getAvailableRoomsForAllCategoriesForHotel(int hotelId) {
     HashMap<Integer, List<Integer>> result = new HashMap<>();
 
-    //TODO hardcoded 1
-    for (Integer category : roomCategoryRepo.getAllRoomIntCategoriesForHotel(1)) {
+    for (Integer category : roomCategoryRepo.getAllRoomIntCategoriesForHotel(hotelId)) {
       result.put(category, getAvailableRoomsForCategory(category));
     }
 
