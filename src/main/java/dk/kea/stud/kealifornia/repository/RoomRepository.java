@@ -51,7 +51,7 @@ public class RoomRepository {
     Room result = null;
 
     String query = "SELECT rooms.id, rooms.room_cat_id, rooms.room_number FROM rooms " +
-            "INNER JOIN room_categories" +
+            "INNER JOIN room_categories " +
             "ON rooms.room_cat_id = room_categories.id " +
             "WHERE rooms.room_number = ? AND room_categories.hotel_id = ?;";
     SqlRowSet rs = jdbc.queryForRowSet(query, roomNumber,1);
