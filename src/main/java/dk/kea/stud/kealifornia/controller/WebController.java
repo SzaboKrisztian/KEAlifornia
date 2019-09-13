@@ -69,11 +69,13 @@ public class WebController {
 
     @GetMapping("/index")
     public String showIndex(Model model) {
+        model.addAttribute("exchangeRateRepo",exchangeRateRepo);
         return "/index";
     }
 
     @GetMapping("/")
-    public String showIndex2() {
+    public String showIndex2(Model model) {
+        model.addAttribute("exchangeRateRepo",exchangeRateRepo);
         return "/index";
     }
 

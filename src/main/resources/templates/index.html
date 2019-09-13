@@ -19,6 +19,12 @@
                     Welcome to
                     <span th:text="${session.preferences} ? ${session.preferences.hotel.name} : ${defaultPreferences.hotel.name}"></span>
                     Hotel.</h1>
+                <h1 class="display-4">
+                    Your currency is
+                    <span th:text="${session.preferences} ? ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()} :
+                    ${exchangeRateRepo.getExchangeRateById(defaultPreferences.currencyId).getCurrencyName()}"></span>
+                    .
+                </h1>
                 <h3>Hotel Managers:</h3>
                 <span>Chris Szabo</span><br>
                 <span>Onescu Radu</span><br>
