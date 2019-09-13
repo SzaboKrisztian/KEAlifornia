@@ -45,7 +45,7 @@ public class Helper {
       }
     }
 
-    for (Occupancy occupancy: occupancyRepo.getAllOccupancies()) {
+    for (Occupancy occupancy: occupancyRepo.getAllOccupanciesForHotel(hotelId)) {
       if (areSchedulesConflicting(checkIn, checkOut, occupancy.getCheckIn(), occupancy.getCheckOut())) {
         int roomCat = occupancy.getRoom().getRoomCategory().getId();
         result.put(roomCat, Math.max(result.get(roomCat) - 1, 0));

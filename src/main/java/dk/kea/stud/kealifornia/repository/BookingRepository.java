@@ -28,6 +28,21 @@ public class BookingRepository {
   @Autowired
   private ExchangeRateRepository exchangeRateRepo;
 
+  public int getHotelId(int bookingId) {
+    int result = 0;
+    String query = "SELECT DISTINCT room_categories.hotel_id FROM " +
+        "booked_rooms INNER JOIN room_categories " +
+        "ON booked_rooms.category_id = room_categories.id " +
+        "WHERE booked_rooms.booking_id = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, bookingId);
+
+    if (rs.first()) {
+      result = rs.getInt(1);
+    }
+
+    return result;
+  }
+
   public Booking findBookingById(int id) {
     Booking result = null;
 

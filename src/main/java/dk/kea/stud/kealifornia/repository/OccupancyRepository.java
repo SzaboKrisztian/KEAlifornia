@@ -45,11 +45,16 @@ public class OccupancyRepository {
     return result;
   }
 
-  public List<Occupancy> getAllOccupancies() {
+  public List<Occupancy> getAllOccupanciesForHotel(int hotelId) {
     List<Occupancy> result = new ArrayList<>();
 
-    String query = "SELECT * FROM occupancies;";
-    SqlRowSet rs = jdbc.queryForRowSet(query);
+    String query = "SELECT occupancies.* FROM " +
+        "occupancies INNER JOIN rooms " +
+        "ON occupancies.room_id = rooms.id " +
+        "INNER JOIN room_categories " +
+        "ON rooms.room_cat_id = room_categories.id " +
+        "WHERE room_categories.hotel_id = ?";
+    SqlRowSet rs = jdbc.queryForRowSet(query, hotelId);
 
     while (rs.next()) {
       result.add(extractNextOccupancyFromRowSet(rs));
@@ -66,6 +71,8 @@ public class OccupancyRepository {
     result.setGuest(guestRepo.findGuestById(rs.getInt("guest_id")));
     result.setCheckIn(rs.getDate("check_in").toLocalDate());
     result.setCheckOut(rs.getDate("check_out").toLocalDate());
+    result.setExchangeRate(rs.getDouble("exchange_rate"));
+    result.setCurrencyId(rs.getInt("currency_id"));
 
     return result;
   }
@@ -76,11 +83,13 @@ public class OccupancyRepository {
       @Override
       public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO occupancies " +
-            "(room_id, guest_id, check_in, check_out) VALUES (?, ?, ?, ?)", new String[]{"id"});
+            "(room_id, guest_id, check_in, check_out, exchange_rate, currency_id) VALUES (?, ?, ?, ?, ?, ?)", new String[]{"id"});
         ps.setInt(1, occupancy.getRoom().getId());
         ps.setInt(2, occupancy.getGuest().getId());
         ps.setDate(3, Date.valueOf(occupancy.getCheckIn()));
         ps.setDate(4, Date.valueOf(occupancy.getCheckOut()));
+        ps.setDouble(5, occupancy.getExchangeRate());
+        ps.setInt(6, occupancy.getCurrencyId());
         return ps;
       }
     };
@@ -111,11 +120,10 @@ public class OccupancyRepository {
     return result;
   }
 
-  public HashMap<Integer, List<Integer>> getAvailableRoomsForAllCategories() {
+  public HashMap<Integer, List<Integer>> getAvailableRoomsForAllCategoriesForHotel(int hotelId) {
     HashMap<Integer, List<Integer>> result = new HashMap<>();
 
-    //TODO hardcoded 1
-    for (Integer category : roomCategoryRepo.getAllRoomIntCategoriesForHotel(1)) {
+    for (Integer category : roomCategoryRepo.getAllRoomIntCategoriesForHotel(hotelId)) {
       result.put(category, getAvailableRoomsForCategory(category));
     }
 
