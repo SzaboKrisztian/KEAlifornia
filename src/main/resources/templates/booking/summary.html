@@ -12,32 +12,37 @@
         <div class="container">
             <div class="jumbotron">
                 <h1 class="display-4">Congratulations! Booking successfully created!</h1>
-                <h2 class="display-5">Your reference number is <span th:text="${booking.getRefNo()}"></span></h2>
+                <h2 class="display-5">Your reference number is <span
+                        th:text="${booking.getRefNo()}"></span></h2>
                 <table>
                     <tr>
-                        <td>Period: </td>
+                        <td>Period:</td>
                         <td th:text="${booking.getCheckIn()} + ' - ' + ${booking.getCheckOut()} + ': ' + ${booking.getNoNights()} + ' nights'"></td>
                     </tr>
                     <tr th:each="entry:${booking.getBookedRooms()}">
                         <td th:text="${entry.getValue()} + 'x ' +
                             ${roomcatrepo.findRoomCategoryById(entry.getKey()).getName()} + ' (' +
-                            ${roomcatrepo.findRoomCategoryById(entry.getKey()).getPricePerNight() / 100} +
-                            ' DKK)'"></td>
-                        <td th:text="${entry.getValue()} * ${roomcatrepo.
-                            findRoomCategoryById(entry.getKey()).getPricePerNight()} / 100 + ' DKK'"></td>
+                            ${roomcatrepo.findRoomCategoryById(entry.getKey()).getPricePerNight() *
+                            exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getExchangeRate()} / 100 + ' ' +
+                            ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()} + ')'"></td>
+                        <td th:text="${entry.getValue()} * ${roomcatrepo.findRoomCategoryById(entry.getKey()).getPricePerNight() *
+                            exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getExchangeRate()} / 100 + ' ' +
+                            ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()}"></td>
                     </tr>
                     <tr>
                         <td>Total per night:</td>
-                        <td th:text="${total} / 100 + ' DKK'"></td>
+                        <td th:text="${total * exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getExchangeRate()} / 100 + ' ' +
+                                    ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()}"></td>
                     </tr>
                     <tr>
                         <td>Grand total:</td>
-                        <td th:text="(${total} * ${booking.getNoNights()}) / 100 + ' DKK'"></td>
+                        <td th:text="${total * booking.getNoNights() * exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getExchangeRate()} / 100 + ' ' +
+                                    ${exchangeRateRepo.getExchangeRateById(session.preferences.currencyId).getCurrencyName()}"></td>
                     </tr>
                 </table>
                 <table>
                     <tr>
-                        <td>Name: </td>
+                        <td>Name:</td>
                         <td th:text="${booking.getGuest().getLastName()} + ', ' + ${booking.getGuest().getFirstName()}"></td>
                     </tr>
                     <tr>

@@ -31,10 +31,8 @@ public class BookingController {
   OccupancyRepository occupancyRepo;
   @Autowired
   Helper helper;
-
   @Autowired
   private HotelRepository hotelRepo;
-
   @Autowired
   private ExchangeRateRepository exchangeRateRepo;
 
@@ -48,26 +46,27 @@ public class BookingController {
   public String processDates(@RequestParam(name = "checkin") String checkin,
                              @RequestParam(name = "checkout") String checkout,
                              Model model, HttpServletRequest request) {
-      Booking booking = new Booking();
-      try {
-        booking.setCheckIn(LocalDate.parse(checkin, AppGlobals.DATE_FORMAT));
-        booking.setCheckOut(LocalDate.parse(checkout, AppGlobals.DATE_FORMAT));
-      } catch (DateTimeParseException e) {
-        System.out.println("error parsing");
-        model.addAttribute("error", "format");
-        return "/booking/dates.html";
-      }
+    Booking booking = new Booking();
+    try {
+      booking.setCheckIn(LocalDate.parse(checkin, AppGlobals.DATE_FORMAT));
+      booking.setCheckOut(LocalDate.parse(checkout, AppGlobals.DATE_FORMAT));
+    } catch (DateTimeParseException e) {
+      System.out.println("error parsing");
+      model.addAttribute("error", "format");
+      return "/booking/dates.html";
+    }
 
-      if (!booking.getCheckIn().isBefore(booking.getCheckOut())) {
-        model.addAttribute("error", "dates");
-        return "/booking/dates.html";
-      }
+    if (!booking.getCheckIn().isBefore(booking.getCheckOut())) {
+      model.addAttribute("error", "dates");
+      return "/booking/dates.html";
+    }
 
-      model.addAttribute("available", helper.countAvailableRoomsForPeriodForHotel(booking.getCheckIn(),
-          booking.getCheckOut(), helper.getPreferences(request).getHotel().getId()));
-      model.addAttribute("roomcatrepo", roomCategoryRepo);
-      model.addAttribute("booking", booking);
-      return "/booking/rooms.html";
+    model.addAttribute("available", helper.countAvailableRoomsForPeriodForHotel(booking.getCheckIn(),
+        booking.getCheckOut(), helper.getPreferences(request).getHotel().getId()));
+    model.addAttribute("roomcatrepo", roomCategoryRepo);
+    model.addAttribute("booking", booking);
+    model.addAttribute("exchangeRateRepo", exchangeRateRepo);
+    return "/booking/rooms.html";
   }
 
   @PostMapping("/rooms")
@@ -87,6 +86,7 @@ public class BookingController {
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
         model.addAttribute("error", "invalid");
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/rooms.html";
       }
       int roomTypeId = Integer.parseInt(typeId);
@@ -102,12 +102,14 @@ public class BookingController {
         model.addAttribute("available", available);
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/rooms.html";
       } else {
         model.addAttribute("available", available);
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
         model.addAttribute("error", "notenough");
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/rooms.html";
       }
     } else if (action.equals("reset")) {
@@ -115,6 +117,7 @@ public class BookingController {
       model.addAttribute("available", available);
       model.addAttribute("booking", booking);
       model.addAttribute("roomcatrepo", roomCategoryRepo);
+      model.addAttribute("exchangeRateRepo", exchangeRateRepo);
       return "/booking/rooms.html";
     } else {
       if (booking.getBookedRooms().isEmpty()) {
@@ -122,11 +125,13 @@ public class BookingController {
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
         model.addAttribute("error", "norooms");
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/rooms.html";
       } else {
         model.addAttribute("total", calculateTotalCost(booking));
         model.addAttribute("booking", booking);
         model.addAttribute("roomcatrepo", roomCategoryRepo);
+        model.addAttribute("exchangeRateRepo", exchangeRateRepo);
         return "/booking/review.html";
       }
     }
@@ -149,6 +154,7 @@ public class BookingController {
                             Model model) {
     model.addAttribute("total", calculateTotalCost(booking));
     model.addAttribute("roomcatrepo", roomCategoryRepo);
+    model.addAttribute("exchangeRateRepo", exchangeRateRepo);
     try {
       guest.setDateOfBirth(LocalDate.parse(dob, AppGlobals.DATE_FORMAT));
       booking.setGuest(guest);
@@ -164,17 +170,18 @@ public class BookingController {
 
   @PostMapping("/summary")
   public String viewSummary(@ModelAttribute("booking") Booking booking,
-                            Model model) {
-    bookingRepo.addBooking(booking);
+                            Model model, HttpServletRequest request) {
+    bookingRepo.addBooking(booking, helper.getPreferences(request).getCurrencyId());
     model.addAttribute("total", calculateTotalCost(booking));
     model.addAttribute("booking", booking);
     model.addAttribute("roomcatrepo", roomCategoryRepo);
+    model.addAttribute("exchangeRateRepo", exchangeRateRepo);
     return "/booking/summary.html";
   }
 
   private int calculateTotalCost(Booking booking) {
     int total = 0;
-    for (Map.Entry<Integer, Integer> entry: booking.getBookedRooms().entrySet()) {
+    for (Map.Entry<Integer, Integer> entry : booking.getBookedRooms().entrySet()) {
       total += entry.getValue() * roomCategoryRepo.
           findRoomCategoryById(entry.getKey()).getPricePerNight();
     }
