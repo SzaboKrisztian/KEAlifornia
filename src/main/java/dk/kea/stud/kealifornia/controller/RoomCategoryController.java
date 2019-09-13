@@ -1,5 +1,6 @@
 package dk.kea.stud.kealifornia.controller;
 
+import dk.kea.stud.kealifornia.Helper;
 import dk.kea.stud.kealifornia.model.Preferences;
 import dk.kea.stud.kealifornia.model.RoomCategory;
 import dk.kea.stud.kealifornia.repository.RoomCategoryRepository;
@@ -20,12 +21,15 @@ public class RoomCategoryController {
 
     @Autowired
     private RoomCategoryRepository roomCategoryRepo;
+    @Autowired
+    Helper helper;
 
     @GetMapping("/admin/room-category")
     public String showAllRoomCategory(Model model,
                                       HttpServletRequest request) throws Exception {
         //TODO hardcoded 1
-        List<RoomCategory> roomCategoryList = roomCategoryRepo.getAllRoomCategoriesForHotel(1);
+        List<RoomCategory> roomCategoryList = roomCategoryRepo.getAllRoomCategoriesForHotel(helper.getPreferences(request).getHotel().getId());
+        System.out.println(roomCategoryList);
         model.addAttribute("roomCategory", roomCategoryList);
         return "/room-category/room-category.html";
     }
@@ -44,7 +48,9 @@ public class RoomCategoryController {
     }
 
     @PostMapping("/admin/add-room-category/save")
-    public String saveRoomCategory(@ModelAttribute RoomCategory roomCategory) {
+    public String saveRoomCategory(@ModelAttribute RoomCategory roomCategory, HttpServletRequest request) {
+        int hotelId = helper.getPreferences(request).getHotel().getId();
+        roomCategory.setHotelId(hotelId);
         roomCategoryRepo.addRoomCategory(roomCategory);
         return "redirect:/admin/room-category";
     }

@@ -71,6 +71,7 @@ public class RoomCategoryRepository {
   }
 
   public void addRoomCategory(RoomCategory roomCategory) {
+    System.out.println(roomCategory.getHotelId());
     jdbc.update("INSERT INTO room_categories(name, description, price_per_night, hotel_id) VALUES " +
             "(?, ?, ?, ?);", roomCategory.getName(), roomCategory.getDescription(),
         roomCategory.getPricePerNight(), roomCategory.getHotelId());

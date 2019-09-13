@@ -1,5 +1,6 @@
 package dk.kea.stud.kealifornia.controller;
 
+import dk.kea.stud.kealifornia.Helper;
 import dk.kea.stud.kealifornia.model.Preferences;
 import dk.kea.stud.kealifornia.model.Room;
 import dk.kea.stud.kealifornia.repository.RoomCategoryRepository;
@@ -19,6 +20,8 @@ public class RoomController {
     private RoomRepository roomRepo;
     @Autowired
     private RoomCategoryRepository roomCategoryRepo;
+    @Autowired
+    Helper helper;
 
     @GetMapping("/admin/room")
     public String room(){
@@ -39,8 +42,9 @@ public void useSession(HttpServletRequest req) {
 
 }
 
-    @PostMapping("/admin/rooms")
-    public String findRoom(@RequestParam(name = "getRoomNumber") String roomNumber, Model model) {
+    @PostMapping("/admin/rooms/")
+    public String findRoom(@RequestParam(name = "getRoomNumber") String roomNumber, Model model,
+                           HttpServletRequest request) {
         String error;
         if(roomRepo.checkRoom(roomNumber)) {
             error = "room-not-found";
@@ -48,7 +52,7 @@ public void useSession(HttpServletRequest req) {
             return "room-form";
         }
         //TODO hardcoded 1
-        Room room = roomRepo.findRoomByRoomNumberForHotel(roomNumber, 1);
+        Room room = roomRepo.findRoomByRoomNumberForHotel(roomNumber, helper.getPreferences(request).getHotel().getId() );
         if(!roomRepo.canDelete(room)){
             error="cannot-delete";
         }
@@ -56,24 +60,25 @@ public void useSession(HttpServletRequest req) {
         model.addAttribute("error", error);
         model.addAttribute("room", room);
         //TODO hardcoded 1
-        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
-        return "edit-room";
+        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(helper.getPreferences(request).getHotel().getId()));
+        return "room/edit-room";
     }
 
     @PostMapping("/admin/edit/")
     public String editRoom(@ModelAttribute Room room,
                            @RequestParam String roomNumber,
-                           @RequestParam String roomCategoryId, Model model){
+                           @RequestParam String roomCategoryId, Model model,
+                           HttpServletRequest request){
         String roomId = String.valueOf(room.getId());
         Room currentRoom = roomRepo.findRoomById(Integer.parseInt(roomId));
         //TODO hardcoded 1
-        Room roomAlreadyExists = roomRepo.findRoomByRoomNumberForHotel(roomNumber,1);
+        Room roomAlreadyExists = roomRepo.findRoomByRoomNumberForHotel(roomNumber,helper.getPreferences(request).getHotel().getId());
         if (roomAlreadyExists!= null && !currentRoom.getRoomNumber().equals(roomAlreadyExists.getRoomNumber())){
             String error = "room-already-exists";
             model.addAttribute("error", error);
             model.addAttribute("room", currentRoom);
             //TODO hardcoded 1
-            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
+            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(helper.getPreferences(request).getHotel().getId()));
             return "/room/edit-room.html";
         }
         roomRepo.updateRoom(roomCategoryId,roomNumber,roomId);
@@ -88,9 +93,9 @@ public void useSession(HttpServletRequest req) {
     }
 
     @GetMapping("/admin/rooms/add")
-    public String addRoom(Model model) {
+    public String addRoom(Model model, HttpServletRequest request) {
         //TODO hardcoded 1
-        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
+        model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(helper.getPreferences(request).getHotel().getId()));
         model.addAttribute("room", new Room());
         return "/room/room-add.html";
     }
@@ -98,12 +103,12 @@ public void useSession(HttpServletRequest req) {
     @PostMapping("/admin/rooms/save")
     public String saveRoom(@RequestParam("roomNumber") String roomNumber,
                            @RequestParam("roomCategoryId") String roomCategoryId,
-                           Model model) {
+                           Model model, HttpServletRequest request) {
         if(!roomRepo.checkRoom(roomNumber)){
             String error = "room-already-exists";
             model.addAttribute("error", error);
             //TODO hardcoded 1
-            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
+            model.addAttribute("categories", roomCategoryRepo.getAllRoomCategoriesForHotel(helper.getPreferences(request).getHotel().getId()));
             model.addAttribute("room", new Room());
             return "room-add";
         }

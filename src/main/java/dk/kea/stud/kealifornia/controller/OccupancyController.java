@@ -39,7 +39,7 @@ public class OccupancyController {
     model.addAttribute("months", generateMonths());
     model.addAttribute("monthNames", new DateFormatSymbols().getMonths());
     //TODO hardcoded
-    model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
+    model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategoriesForHotel(helper.getPreferences(request).getHotel().getId()));
     return "/reception/pickdate.html";
   }
 
@@ -55,7 +55,7 @@ public class OccupancyController {
     model.addAttribute("months", generateMonths());
     model.addAttribute("monthNames", new DateFormatSymbols().getMonths());
     //TODO hardcoded
-    model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategoriesForHotel(1));
+    model.addAttribute("roomCategories", roomCategoryRepo.getAllRoomCategoriesForHotel(helper.getPreferences(request).getHotel().getId()));
     return "/reception/pickdate.html";
   }
 
